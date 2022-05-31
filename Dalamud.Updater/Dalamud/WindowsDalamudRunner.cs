@@ -126,13 +126,4 @@ public static class WindowsDalamudRunner
         uint dwDesiredAccess,
         [MarshalAs(UnmanagedType.Bool)] bool bInheritHandle,
         DuplicateOptions dwOptions);
-
-    private static Process GetInheritableCurrentProcessHandle() {
-        if (!DuplicateHandle(Process.GetCurrentProcess().Handle, Process.GetCurrentProcess().Handle, Process.GetCurrentProcess().Handle, out var inheritableCurrentProcessHandle, 0, true, DuplicateOptions.SameAccess)) {
-            Log.Error("Failed to call DuplicateHandle: Win32 error code {0}", Marshal.GetLastWin32Error());
-            return null;
-        }
-
-        return new ExistingProcess(inheritableCurrentProcessHandle);
-    }
 }
