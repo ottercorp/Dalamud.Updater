@@ -21,6 +21,10 @@ using System.Configuration;
 using Newtonsoft.Json.Linq;
 using System.Security.Principal;
 using System.Xml;
+using XIVLauncher.Common.Dalamud;
+using Serilog.Core;
+using Serilog;
+using Serilog.Events;
 
 namespace Dalamud.Updater
 {
@@ -99,6 +103,7 @@ namespace Dalamud.Updater
 
         public FormMain()
         {
+            InitLogging();
             InitializeComponent();
             InitializePIDCheck();
             InitializeDeleteShit();
@@ -138,7 +143,30 @@ namespace Dalamud.Updater
             }
         }
 
+
         #region Initialize
+
+        private static void InitLogging()
+        {
+            var baseDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            var logPath = Path.Combine(baseDirectory, "Dalamud.Updater.log");
+
+            var levelSwitch = new LoggingLevelSwitch();
+
+#if DEBUG
+            levelSwitch.MinimumLevel = LogEventLevel.Verbose;
+#else
+            levelSwitch.MinimumLevel = LogEventLevel.Information;
+#endif
+
+
+            Log.Logger = new LoggerConfiguration()
+                //.WriteTo.Console(standardErrorFromLevel: LogEventLevel.Verbose)
+                .WriteTo.Async(a => a.File(logPath))
+                .MinimumLevel.ControlledBy(levelSwitch)
+                .CreateLogger();
+        }
         private void InitializeConfig()
         {
             if (GetAppSettings("AutoInject", "false") == "true")
@@ -171,7 +199,8 @@ namespace Dalamud.Updater
 
         private void InitializePIDCheck()
         {
-            var thread = new Thread(() => {
+            var thread = new Thread(() =>
+            {
                 while (this.isThreadRunning)
                 {
                     try
@@ -185,7 +214,8 @@ namespace Dalamud.Updater
                         var oldHash = String.Join(", ", oldPidList).GetHashCode();
                         if (oldHash != newHash && this.comboBoxFFXIV.IsHandleCreated)
                         {
-                            this.comboBoxFFXIV.Invoke((MethodInvoker)delegate {
+                            this.comboBoxFFXIV.Invoke((MethodInvoker)delegate
+                            {
                                 // Running on the UI thread
                                 comboBoxFFXIV.Items.Clear();
                                 comboBoxFFXIV.Items.AddRange(newPidList);
@@ -197,9 +227,9 @@ namespace Dalamud.Updater
                                     {
                                         foreach (var pidStr in newPidList)
                                         {
-                                            Thread.Sleep((int)(this.injectDelaySeconds * 1000));
+                                            //Thread.Sleep((int)(this.injectDelaySeconds * 1000));
                                             var pid = int.Parse(pidStr);
-                                            if (this.Inject(pid))
+                                            if (this.Inject(pid, (int)this.injectDelaySeconds * 1000))
                                             {
                                                 this.DalamudUpdaterIcon.ShowBalloonTip(2000, "帮你注入了", $"帮你注入了进程{pid}，不用谢。", ToolTipIcon.Info);
                                             }
@@ -208,7 +238,8 @@ namespace Dalamud.Updater
                                 }
                             });
                         }
-                    } catch
+                    }
+                    catch
                     {
 
                     }
@@ -227,7 +258,8 @@ namespace Dalamud.Updater
             AutoUpdater.InstalledVersion = getVersion();
             labelVer.Text = $"v{Assembly.GetExecutingAssembly().GetName().Version}";
             UpdateRuntimePaths();
-            new Thread(() => {
+            new Thread(() =>
+            {
                 Thread.Sleep(5000);
                 if (runtimePaths.Any(p => !p.Exists))
                 {
@@ -240,7 +272,7 @@ namespace Dalamud.Updater
                         return;
                 }
             }).Start();
-            
+
         }
         private void FormMain_Disposed(object sender, EventArgs e)
         {
@@ -336,9 +368,7 @@ namespace Dalamud.Updater
                     {
                         dialogResult =
                             MessageBox.Show(
-                                $@"卫月框架 {args.CurrentVersion} 版本可用。当前版本为 {
-                                        args.InstalledVersion
-                                    }。这是一个强制更新，请点击确认来更新卫月框架。",
+                                $@"卫月框架 {args.CurrentVersion} 版本可用。当前版本为 {args.InstalledVersion}。这是一个强制更新，请点击确认来更新卫月框架。",
                                 @"更新可用",
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Information);
@@ -347,9 +377,7 @@ namespace Dalamud.Updater
                     {
                         dialogResult =
                             MessageBox.Show(
-                                $@"卫月框架 {args.CurrentVersion} 版本可用。当前版本为 {
-                                        args.InstalledVersion
-                                    }。您想要开始更新吗？", @"更新可用",
+                                $@"卫月框架 {args.CurrentVersion} 版本可用。当前版本为 {args.InstalledVersion}。您想要开始更新吗？", @"更新可用",
                                 MessageBoxButtons.YesNo,
                                 MessageBoxIcon.Information);
                     }
@@ -585,7 +613,8 @@ namespace Dalamud.Updater
                     TryDownloadRuntime(runtimePath, RuntimeVersion);
                 else
                     return;
-            } else
+            }
+            else
             {
                 var choice = MessageBox.Show("运行库已存在，是否强制下载？", "下载运行库",
                                 MessageBoxButtons.YesNo,
@@ -644,7 +673,7 @@ namespace Dalamud.Updater
             Process.Start("https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&inviteCode=CZtWN&from=181074&biz=ka&shareSource=5");
         }
 
-        private string GeneratingDalamudStartInfo(Process process)
+        private DalamudStartInfo GeneratingDalamudStartInfo(Process process,string dalamudPath,int injectDelay)
         {
             var ffxivDir = Path.GetDirectoryName(process.MainModule.FileName);
             var appDataDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
@@ -652,19 +681,21 @@ namespace Dalamud.Updater
 
             var gameVerStr = File.ReadAllText(Path.Combine(ffxivDir, "ffxivgame.ver"));
 
-            var startInfo = JObject.FromObject(new
+            var startInfo = new DalamudStartInfo
             {
                 ConfigurationPath = Path.Combine(xivlauncherDir, "dalamudConfig.json"),
                 PluginDirectory = Path.Combine(xivlauncherDir, "installedPlugins"),
                 DefaultPluginDirectory = Path.Combine(xivlauncherDir, "devPlugins"),
                 AssetDirectory = Path.Combine(xivlauncherDir, "dalamudAssets"),
                 GameVersion = gameVerStr,
-                Language = "ChineseSimplified",
+                Language = "4",
                 OptOutMbCollection = false,
                 GlobalAccelerate = this.checkBoxAcce.Checked,
-            });
+                WorkingDirectory = dalamudPath,
+                DelayInitializeMs = injectDelay
+            };
 
-            return startInfo.ToString();
+            return startInfo;
         }
 
         private bool isInjected(Process process)
@@ -678,36 +709,44 @@ namespace Dalamud.Updater
                         return true;
                     }
                 }
-            } catch {
-            
+            }
+            catch
+            {
+
             }
             return false;
         }
 
-        private bool Inject(int pid)
+        private bool Inject(int pid,int injectDelay=0)
         {
             var process = Process.GetProcessById(pid);
-            if(isInjected(process))
+            if (isInjected(process))
             {
                 return false;
             }
             var version = getVersion();
             var dalamudPath = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, $"{version}"));
             var injectorFile = Path.Combine(dalamudPath.FullName, "Dalamud.Injector.exe");
-            var dalamudStartInfo = Convert.ToBase64String(Encoding.UTF8.GetBytes(GeneratingDalamudStartInfo(process)));
-            var startInfo = new ProcessStartInfo(injectorFile, $"{pid} {dalamudStartInfo}");
-            startInfo.WorkingDirectory = dalamudPath.FullName;
-            Process.Start(startInfo);
+            //var dalamudStartInfo = Convert.ToBase64String(Encoding.UTF8.GetBytes(GeneratingDalamudStartInfo(process)));
+            //var startInfo = new ProcessStartInfo(injectorFile, $"{pid} {dalamudStartInfo}");
+            //startInfo.WorkingDirectory = dalamudPath.FullName;
+            //Process.Start(startInfo);
+            var dalamudStartInfo = GeneratingDalamudStartInfo(process,dalamudPath.FullName, injectDelay);
+            var environment = new Dictionary<string, string>();
+            var prevDalamudRuntime = Environment.GetEnvironmentVariable("DALAMUD_RUNTIME");
+            if (string.IsNullOrWhiteSpace(prevDalamudRuntime))
+                environment.Add("DALAMUD_RUNTIME", runtimePath.FullName);
+            WindowsDalamudRunner.Inject(new FileInfo(injectorFile),process.Id,environment,DalamudLoadMethod.DllInject,dalamudStartInfo);
             return true;
         }
 
         private void ButtonInject_Click(object sender, EventArgs e)
         {
-            if(this.comboBoxFFXIV.SelectedItem != null
+            if (this.comboBoxFFXIV.SelectedItem != null
                 && this.comboBoxFFXIV.SelectedItem.ToString().Length > 0)
             {
                 var pidStr = this.comboBoxFFXIV.SelectedItem.ToString();
-                if(int.TryParse(pidStr, out var pid))
+                if (int.TryParse(pidStr, out var pid))
                 {
                     Inject(pid);
                 }
