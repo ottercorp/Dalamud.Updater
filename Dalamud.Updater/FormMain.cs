@@ -112,7 +112,7 @@ namespace Dalamud.Updater
         private Version getVersion()
         {
             var rgx = new Regex(@"^\d+\.\d+\.\d+\.\d+$");
-            var di = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "Hooks"));
+            var di = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "addon", "Hooks"));
             var version = new Version("0.0.0.0");
             if (!di.Exists)
                 return version;
@@ -141,8 +141,8 @@ namespace Dalamud.Updater
             dalamudLoadingOverlay.OnProgressBar += setProgressBar;
             dalamudLoadingOverlay.OnSetVisible += setVisible;
             dalamudLoadingOverlay.OnStatusLabel += setStatus;
-            addonDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName));
-            runtimeDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher", "runtime"));
+            addonDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "addon"));
+            runtimeDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "runtime"));
             assetDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher", "dalamudAssets"));
             configDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher", "pluginConfigs"));
             dalamudUpdater = new DalamudUpdater(addonDirectory, runtimeDirectory, assetDirectory, configDirectory);
@@ -530,9 +530,12 @@ namespace Dalamud.Updater
             }
             var dalamudStartInfo = GeneratingDalamudStartInfo(process, Directory.GetParent(dalamudUpdater.Runner.FullName).FullName, injectDelay);
             var environment = new Dictionary<string, string>();
+            // No use cuz we're injecting instead of launching, the Dalamud.Boot.dll is reading environment variables from ffxiv_dx11.exe
+            /*
             var prevDalamudRuntime = Environment.GetEnvironmentVariable("DALAMUD_RUNTIME");
             if (string.IsNullOrWhiteSpace(prevDalamudRuntime))
                 environment.Add("DALAMUD_RUNTIME", runtimeDirectory.FullName);
+            */
             WindowsDalamudRunner.Inject(dalamudUpdater.Runner, process.Id, environment, DalamudLoadMethod.DllInject, dalamudStartInfo);
             return true;
         }
@@ -545,7 +548,10 @@ namespace Dalamud.Updater
                 var pidStr = this.comboBoxFFXIV.SelectedItem.ToString();
                 if (int.TryParse(pidStr, out var pid))
                 {
-                    Inject(pid);
+                    if (Inject(pid))
+                    {
+                        Log.Information("[DINJECT] Inject finished.");
+                    }
                 }
                 else
                 {

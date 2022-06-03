@@ -47,7 +47,7 @@ namespace Dalamud.Updater
                     break;
 
                 case IDalamudLoadingOverlay.DalamudUpdateStep.Runtime:
-                    OnStatusLabel?.Invoke("正在更新依赖库...");
+                    OnStatusLabel?.Invoke("正在更新运行库...");
                     break;
 
                 case IDalamudLoadingOverlay.DalamudUpdateStep.Unavailable:
