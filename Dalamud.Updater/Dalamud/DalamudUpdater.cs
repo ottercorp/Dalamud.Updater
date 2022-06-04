@@ -107,6 +107,8 @@ namespace XIVLauncher.Common.Dalamud
         {
             Overlay.ReportProgress(size, downloaded, progress);
         }
+        public delegate void UpdateEvent(DownloadState value);
+        public event UpdateEvent OnUpdateEvent;
         private readonly static object Mutex = new object();
         public void Run()
         {
@@ -132,7 +134,7 @@ namespace XIVLauncher.Common.Dalamud
 
                     if (this.State != DownloadState.Done) this.State = DownloadState.Failed;
                     //Mutex.Close();
-
+                    OnUpdateEvent?.Invoke(this.State);
                 });
             }
 

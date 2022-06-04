@@ -30,7 +30,7 @@ namespace Dalamud.Updater
 {
     public partial class FormMain : Form
     {
-        //private string updateUrl = "https://dalamud-1253720819.cos.ap-nanjing.myqcloud.com/update.xml";
+        //private string updateUrl = "https://dalamud-1253720819.cos.ap-nanjing.myqcloud.com/updater.xml";
 
         // private List<string> pidList = new List<string>();
         private bool firstHideHint = true;
@@ -90,7 +90,9 @@ namespace Dalamud.Updater
                 Console.WriteLine("Error writing app settings");
             }
         }
+
         private int checkTimes = 0;
+
         private void CheckUpdate()
         {
             checkTimes++;
@@ -107,6 +109,11 @@ namespace Dalamud.Updater
                 MessageBox.Show("有问题你发日志，别搁这瞎几把点了", "獭纪委");
             }
             dalamudUpdater.Run();
+        }
+
+        private Version GetUpdaterVersion()
+        {
+            return Assembly.GetExecutingAssembly().GetName().Version;
         }
 
         private Version getVersion()
@@ -147,6 +154,7 @@ namespace Dalamud.Updater
             configDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher", "pluginConfigs"));
             dalamudUpdater = new DalamudUpdater(addonDirectory, runtimeDirectory, assetDirectory, configDirectory);
             dalamudUpdater.Overlay = dalamudLoadingOverlay;
+            dalamudUpdater.OnUpdateEvent += DalamudUpdater_OnUpdateEvent;
             labelVersion.Text = string.Format("卫月版本 : {0}", getVersion());
             delayBox.Value = (decimal)this.injectDelaySeconds;
             string[] strArgs = Environment.GetCommandLineArgs();
@@ -159,6 +167,41 @@ namespace Dalamud.Updater
                     firstHideHint = false;
                     this.DalamudUpdaterIcon.ShowBalloonTip(2000, "自启动成功", "放心，我会在后台偷偷干活的。", ToolTipIcon.Info);
                 }
+            }
+        }
+
+        private void DalamudUpdater_OnUpdateEvent(DalamudUpdater.DownloadState value)
+        {
+            var verStr = string.Format("卫月版本 : {0}", getVersion());
+            if (this.labelVersion.InvokeRequired)
+            {
+                Action<string> actionDelegate = (x) => { labelVersion.Text = verStr; };
+                this.labelVersion.Invoke(actionDelegate, verStr);
+            }
+            else
+            {
+                labelVersion.Text = verStr;
+            }
+
+            if (value == DalamudUpdater.DownloadState.Failed)
+            {
+                MessageBox.Show("更新Dalamud失败", "獭纪委", MessageBoxButtons.YesNo);
+                setStatus("更新Dalamud失败");
+            }
+            switch (value) {
+                case DalamudUpdater.DownloadState.Failed:
+                    MessageBox.Show("更新Dalamud失败", "獭纪委", MessageBoxButtons.YesNo);
+                    setStatus("更新Dalamud失败");
+                    break;
+                case DalamudUpdater.DownloadState.Unknown:
+                    setStatus("未知错误");
+                    break;
+                case DalamudUpdater.DownloadState.NoIntegrity:
+                    setStatus("卫月与游戏不兼容");
+                    break;
+                case DalamudUpdater.DownloadState.Done:
+                    setStatus("更新成功");
+                    break;
             }
         }
         #region init
@@ -210,6 +253,24 @@ namespace Dalamud.Updater
             if (File.Exists(shitInjector))
             {
                 File.Delete(shitInjector);
+            }
+
+            var shitDalamud = Path.Combine(Directory.GetCurrentDirectory(), "6.3.0.9");
+            if (Directory.Exists(shitDalamud))
+            {
+                Directory.Delete(shitDalamud,true);
+            }
+
+            var shitUIRes = Path.Combine(Directory.GetCurrentDirectory(), "XIVLauncher", "dalamudAssets", "UIRes");
+            if (Directory.Exists(shitUIRes))
+            {
+                Directory.Delete(shitUIRes, true);
+            }
+
+            var shitRuntime = Path.Combine(Directory.GetCurrentDirectory(), "XIVLauncher", "runtime");
+            if (Directory.Exists(shitRuntime))
+            {
+                Directory.Delete(shitRuntime, true);
             }
         }
 
@@ -271,7 +332,7 @@ namespace Dalamud.Updater
         {
             AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
             AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
-            AutoUpdater.InstalledVersion = getVersion();
+            AutoUpdater.InstalledVersion = GetUpdaterVersion();
             labelVer.Text = $"v{Assembly.GetExecutingAssembly().GetName().Version}";
             CheckUpdate();
         }
@@ -369,7 +430,7 @@ namespace Dalamud.Updater
                     {
                         dialogResult =
                             MessageBox.Show(
-                                $@"卫月框架 {args.CurrentVersion} 版本可用。当前版本为 {args.InstalledVersion}。这是一个强制更新，请点击确认来更新卫月框架。",
+                                $@"卫月注入器 {args.CurrentVersion} 版本可用。当前版本为 {args.InstalledVersion}。这是一个强制更新，请点击确认来更新卫月框架。",
                                 @"更新可用",
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Information);
@@ -378,7 +439,7 @@ namespace Dalamud.Updater
                     {
                         dialogResult =
                             MessageBox.Show(
-                                $@"卫月框架 {args.CurrentVersion} 版本可用。当前版本为 {args.InstalledVersion}。您想要开始更新吗？", @"更新可用",
+                                $@"卫月注入器 {args.CurrentVersion} 版本可用。当前版本为 {args.InstalledVersion}。您想要开始更新吗？", @"更新可用",
                                 MessageBoxButtons.YesNo,
                                 MessageBoxIcon.Information);
                     }
@@ -605,11 +666,13 @@ namespace Dalamud.Updater
 
         private void setProgressBar(int v)
         {
-            if (this.toolStripProgressBar1.Owner.InvokeRequired) {
+            if (this.toolStripProgressBar1.Owner.InvokeRequired)
+            {
                 Action<int> actionDelegate = (x) => { toolStripProgressBar1.Value = v; };
                 this.toolStripProgressBar1.Owner.Invoke(actionDelegate, v);
             }
-            else {
+            else
+            {
                 this.toolStripProgressBar1.Value = v;
             }
         }

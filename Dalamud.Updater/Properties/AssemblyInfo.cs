@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Bluefissure")]
 [assembly: AssemblyProduct("Dalamud.Updater")]
-[assembly: AssemblyCopyright("Copyright © Bluefissure 2021")]
+[assembly: AssemblyCopyright("Copyright © Bluefissure 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
