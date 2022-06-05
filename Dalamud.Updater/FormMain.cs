@@ -30,7 +30,7 @@ namespace Dalamud.Updater
 {
     public partial class FormMain : Form
     {
-        //private string updateUrl = "https://dalamud-1253720819.cos.ap-nanjing.myqcloud.com/updater.xml";
+        // private string updateUrl = "https://dalamud-1253720819.cos.ap-nanjing.myqcloud.com/updater.xml";
 
         // private List<string> pidList = new List<string>();
         private bool firstHideHint = true;
