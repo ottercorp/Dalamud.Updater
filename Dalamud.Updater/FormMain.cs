@@ -606,7 +606,8 @@ namespace Dalamud.Updater
             //var startInfo = new ProcessStartInfo(injectorFile, $"{pid} {dalamudStartInfo}");
             //startInfo.WorkingDirectory = dalamudPath.FullName;
             //Process.Start(startInfo);
-            if (dalamudUpdater.State != DalamudUpdater.DownloadState.Done)
+            Log.Information($"[Updater] dalamudUpdater.State:{dalamudUpdater.State}");
+            if (dalamudUpdater.State == DalamudUpdater.DownloadState.NoIntegrity)
             {
                 if (MessageBox.Show("当前Dalamud版本可能与游戏不兼容,确定注入吗？", "獭纪委", MessageBoxButtons.YesNo) != DialogResult.Yes)
                 {
