@@ -30,7 +30,7 @@ namespace Dalamud.Updater
 {
     public partial class FormMain : Form
     {
-        // private string updateUrl = "https://dalamud-1253720819.cos.ap-nanjing.myqcloud.com/updater.xml";
+        private string updateUrl = "https://dalamud-1253720819.cos.ap-nanjing.myqcloud.com/updater.xml";
 
         // private List<string> pidList = new List<string>();
         private bool firstHideHint = true;
@@ -167,6 +167,26 @@ namespace Dalamud.Updater
                     firstHideHint = false;
                     this.DalamudUpdaterIcon.ShowBalloonTip(2000, "自启动成功", "放心，我会在后台偷偷干活的。", ToolTipIcon.Info);
                 }
+            }
+            try
+            {
+                var localVersion = Assembly.GetExecutingAssembly().GetName().Version;
+                var remoteUrl = updateUrl;
+                XmlDocument remoteXml = new XmlDocument();
+                remoteXml.Load(remoteUrl);
+                foreach (XmlNode child in remoteXml.SelectNodes("/item/version"))
+                {
+                    if (child.InnerText != localVersion.ToString())
+                    {
+                        AutoUpdater.Start(remoteUrl);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "程序启动版本检查失败",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -430,7 +450,7 @@ namespace Dalamud.Updater
                     {
                         dialogResult =
                             MessageBox.Show(
-                                $@"卫月注入器 {args.CurrentVersion} 版本可用。当前版本为 {args.InstalledVersion}。这是一个强制更新，请点击确认来更新卫月框架。",
+                                $@"卫月更新器 {args.CurrentVersion} 版本可用。当前版本为 {args.InstalledVersion}。这是一个强制更新，请点击确认来更新卫月更新器。",
                                 @"更新可用",
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Information);
@@ -439,7 +459,7 @@ namespace Dalamud.Updater
                     {
                         dialogResult =
                             MessageBox.Show(
-                                $@"卫月注入器 {args.CurrentVersion} 版本可用。当前版本为 {args.InstalledVersion}。您想要开始更新吗？", @"更新可用",
+                                $@"卫月更新器 {args.CurrentVersion} 版本可用。当前版本为 {args.InstalledVersion}。您想要开始更新吗？", @"更新可用",
                                 MessageBoxButtons.YesNo,
                                 MessageBoxIcon.Information);
                     }
