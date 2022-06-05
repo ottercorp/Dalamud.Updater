@@ -152,11 +152,9 @@ namespace Dalamud.Updater
             runtimeDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "runtime"));
             assetDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher", "dalamudAssets"));
             configDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher", "pluginConfigs"));
-            dalamudUpdater = new DalamudUpdater(addonDirectory, runtimeDirectory, assetDirectory, configDirectory);
-            dalamudUpdater.Overlay = dalamudLoadingOverlay;
-            dalamudUpdater.OnUpdateEvent += DalamudUpdater_OnUpdateEvent;
-            labelVersion.Text = string.Format("卫月版本 : {0}", getVersion());
+            //labelVersion.Text = string.Format("卫月版本 : {0}", getVersion());
             delayBox.Value = (decimal)this.injectDelaySeconds;
+            SetDalamudVersion();
             string[] strArgs = Environment.GetCommandLineArgs();
             if (strArgs.Length >= 2 && strArgs[1].Equals("-startup"))
             {
@@ -188,27 +186,15 @@ namespace Dalamud.Updater
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
+            dalamudUpdater = new DalamudUpdater(addonDirectory, runtimeDirectory, assetDirectory, configDirectory);
+            dalamudUpdater.Overlay = dalamudLoadingOverlay;
+            dalamudUpdater.OnUpdateEvent += DalamudUpdater_OnUpdateEvent;
         }
 
         private void DalamudUpdater_OnUpdateEvent(DalamudUpdater.DownloadState value)
         {
-            var verStr = string.Format("卫月版本 : {0}", getVersion());
-            if (this.labelVersion.InvokeRequired)
+            switch (value)
             {
-                Action<string> actionDelegate = (x) => { labelVersion.Text = verStr; };
-                this.labelVersion.Invoke(actionDelegate, verStr);
-            }
-            else
-            {
-                labelVersion.Text = verStr;
-            }
-
-            if (value == DalamudUpdater.DownloadState.Failed)
-            {
-                MessageBox.Show("更新Dalamud失败", "獭纪委", MessageBoxButtons.YesNo);
-                setStatus("更新Dalamud失败");
-            }
-            switch (value) {
                 case DalamudUpdater.DownloadState.Failed:
                     MessageBox.Show("更新Dalamud失败", "獭纪委", MessageBoxButtons.YesNo);
                     setStatus("更新Dalamud失败");
@@ -220,8 +206,26 @@ namespace Dalamud.Updater
                     setStatus("卫月与游戏不兼容");
                     break;
                 case DalamudUpdater.DownloadState.Done:
+                    SetDalamudVersion();
                     setStatus("更新成功");
                     break;
+                case DalamudUpdater.DownloadState.Checking:
+                    setStatus("检查更新中...");
+                    break;
+            }
+        }
+
+        public void SetDalamudVersion()
+        {
+            var verStr = string.Format("卫月版本 : {0}", getVersion());
+            if (this.labelVersion.InvokeRequired)
+            {
+                Action<string> actionDelegate = (x) => { labelVersion.Text = x; };
+                this.labelVersion.Invoke(actionDelegate, verStr);
+            }
+            else
+            {
+                labelVersion.Text = verStr;
             }
         }
         #region init
@@ -278,7 +282,7 @@ namespace Dalamud.Updater
             var shitDalamud = Path.Combine(Directory.GetCurrentDirectory(), "6.3.0.9");
             if (Directory.Exists(shitDalamud))
             {
-                Directory.Delete(shitDalamud,true);
+                Directory.Delete(shitDalamud, true);
             }
 
             var shitUIRes = Path.Combine(Directory.GetCurrentDirectory(), "XIVLauncher", "dalamudAssets", "UIRes");
@@ -609,6 +613,7 @@ namespace Dalamud.Updater
                     return false;
                 }
             }
+            return false;
             var dalamudStartInfo = GeneratingDalamudStartInfo(process, Directory.GetParent(dalamudUpdater.Runner.FullName).FullName, injectDelay);
             var environment = new Dictionary<string, string>();
             // No use cuz we're injecting instead of launching, the Dalamud.Boot.dll is reading environment variables from ffxiv_dx11.exe
@@ -688,7 +693,7 @@ namespace Dalamud.Updater
         {
             if (this.toolStripProgressBar1.Owner.InvokeRequired)
             {
-                Action<int> actionDelegate = (x) => { toolStripProgressBar1.Value = v; };
+                Action<int> actionDelegate = (x) => { toolStripProgressBar1.Value = x; };
                 this.toolStripProgressBar1.Owner.Invoke(actionDelegate, v);
             }
             else
@@ -698,9 +703,9 @@ namespace Dalamud.Updater
         }
         private void setStatus(string v)
         {
-            if (toolStripProgressBar1.Owner.InvokeRequired)
+            if (toolStripStatusLabel1.Owner.InvokeRequired)
             {
-                Action<string> actionDelegate = (x) => { toolStripStatusLabel1.Text = v; };
+                Action<string> actionDelegate = (x) => { toolStripStatusLabel1.Text = x; };
                 this.toolStripStatusLabel1.Owner.Invoke(actionDelegate, v);
             }
             else
@@ -712,13 +717,17 @@ namespace Dalamud.Updater
         {
             if (toolStripProgressBar1.Owner.InvokeRequired)
             {
-                Action<string> actionDelegate = (x) => { toolStripProgressBar1.Visible = v; toolStripStatusLabel1.Visible = v; };
+                Action<bool> actionDelegate = (x) =>
+                {
+                    toolStripProgressBar1.Visible = x;
+                    //toolStripStatusLabel1.Visible = v; 
+                };
                 this.toolStripStatusLabel1.Owner.Invoke(actionDelegate, v);
             }
             else
             {
                 toolStripProgressBar1.Visible = v;
-                toolStripStatusLabel1.Visible = v;
+                //toolStripStatusLabel1.Visible = v;
             }
         }
     }
