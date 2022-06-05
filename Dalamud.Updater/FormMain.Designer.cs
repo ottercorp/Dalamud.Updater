@@ -52,6 +52,8 @@ namespace Dalamud.Updater
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.delayBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -59,12 +61,12 @@ namespace Dalamud.Updater
             // 
             // buttonCheckForUpdate
             // 
-            this.buttonCheckForUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.buttonCheckForUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCheckForUpdate.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonCheckForUpdate.Location = new System.Drawing.Point(14, 45);
+            this.buttonCheckForUpdate.Location = new System.Drawing.Point(12, 34);
             this.buttonCheckForUpdate.Name = "buttonCheckForUpdate";
-            this.buttonCheckForUpdate.Size = new System.Drawing.Size(197, 40);
+            this.buttonCheckForUpdate.Size = new System.Drawing.Size(195, 40);
             this.buttonCheckForUpdate.TabIndex = 0;
             this.buttonCheckForUpdate.Text = "检查更新";
             this.buttonCheckForUpdate.UseVisualStyleBackColor = true;
@@ -74,7 +76,7 @@ namespace Dalamud.Updater
             // 
             this.labelVersion.AutoSize = true;
             this.labelVersion.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelVersion.Location = new System.Drawing.Point(12, 18);
+            this.labelVersion.Location = new System.Drawing.Point(12, 9);
             this.labelVersion.Name = "labelVersion";
             this.labelVersion.Size = new System.Drawing.Size(119, 15);
             this.labelVersion.TabIndex = 1;
@@ -82,24 +84,26 @@ namespace Dalamud.Updater
             // 
             // comboBoxFFXIV
             // 
+            this.comboBoxFFXIV.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxFFXIV.Cursor = System.Windows.Forms.Cursors.Default;
             this.comboBoxFFXIV.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxFFXIV.FormattingEnabled = true;
             this.comboBoxFFXIV.ImeMode = System.Windows.Forms.ImeMode.On;
-            this.comboBoxFFXIV.Location = new System.Drawing.Point(13, 90);
+            this.comboBoxFFXIV.Location = new System.Drawing.Point(12, 80);
             this.comboBoxFFXIV.Name = "comboBoxFFXIV";
-            this.comboBoxFFXIV.Size = new System.Drawing.Size(196, 23);
+            this.comboBoxFFXIV.Size = new System.Drawing.Size(195, 23);
             this.comboBoxFFXIV.TabIndex = 2;
             this.comboBoxFFXIV.Click += new System.EventHandler(this.comboBoxFFXIV_Clicked);
             // 
             // buttonInject
             // 
-            this.buttonInject.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.buttonInject.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonInject.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonInject.Location = new System.Drawing.Point(11, 176);
+            this.buttonInject.Location = new System.Drawing.Point(11, 186);
             this.buttonInject.Name = "buttonInject";
-            this.buttonInject.Size = new System.Drawing.Size(197, 89);
+            this.buttonInject.Size = new System.Drawing.Size(196, 79);
             this.buttonInject.TabIndex = 0;
             this.buttonInject.Text = "注入灵魂";
             this.buttonInject.UseVisualStyleBackColor = true;
@@ -118,8 +122,9 @@ namespace Dalamud.Updater
             // 
             // checkBoxAcce
             // 
+            this.checkBoxAcce.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxAcce.AutoSize = true;
-            this.checkBoxAcce.Location = new System.Drawing.Point(130, 18);
+            this.checkBoxAcce.Location = new System.Drawing.Point(133, 8);
             this.checkBoxAcce.Name = "checkBoxAcce";
             this.checkBoxAcce.Size = new System.Drawing.Size(78, 19);
             this.checkBoxAcce.TabIndex = 4;
@@ -130,7 +135,7 @@ namespace Dalamud.Updater
             // checkBoxAutoInject
             // 
             this.checkBoxAutoInject.AutoSize = true;
-            this.checkBoxAutoInject.Location = new System.Drawing.Point(130, 123);
+            this.checkBoxAutoInject.Location = new System.Drawing.Point(130, 112);
             this.checkBoxAutoInject.Name = "checkBoxAutoInject";
             this.checkBoxAutoInject.Size = new System.Drawing.Size(78, 19);
             this.checkBoxAutoInject.TabIndex = 4;
@@ -174,7 +179,7 @@ namespace Dalamud.Updater
             // checkBoxAutoStart
             // 
             this.checkBoxAutoStart.AutoSize = true;
-            this.checkBoxAutoStart.Location = new System.Drawing.Point(12, 123);
+            this.checkBoxAutoStart.Location = new System.Drawing.Point(12, 112);
             this.checkBoxAutoStart.Name = "checkBoxAutoStart";
             this.checkBoxAutoStart.Size = new System.Drawing.Size(78, 19);
             this.checkBoxAutoStart.TabIndex = 5;
@@ -194,7 +199,7 @@ namespace Dalamud.Updater
             // delayLabel
             // 
             this.delayLabel.AutoSize = true;
-            this.delayLabel.Location = new System.Drawing.Point(12, 150);
+            this.delayLabel.Location = new System.Drawing.Point(12, 139);
             this.delayLabel.Name = "delayLabel";
             this.delayLabel.Size = new System.Drawing.Size(59, 15);
             this.delayLabel.TabIndex = 10;
@@ -203,7 +208,7 @@ namespace Dalamud.Updater
             // second
             // 
             this.second.AutoSize = true;
-            this.second.Location = new System.Drawing.Point(188, 150);
+            this.second.Location = new System.Drawing.Point(188, 139);
             this.second.Name = "second";
             this.second.Size = new System.Drawing.Size(20, 15);
             this.second.TabIndex = 11;
@@ -211,7 +216,7 @@ namespace Dalamud.Updater
             // 
             // delayBox
             // 
-            this.delayBox.Location = new System.Drawing.Point(77, 147);
+            this.delayBox.Location = new System.Drawing.Point(77, 136);
             this.delayBox.Name = "delayBox";
             this.delayBox.Size = new System.Drawing.Size(104, 23);
             this.delayBox.TabIndex = 12;
@@ -239,11 +244,24 @@ namespace Dalamud.Updater
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
             this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.Crimson;
+            this.label1.Location = new System.Drawing.Point(12, 164);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(200, 17);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "自动注入黑屏请先尝试增加延迟！！";
+            this.toolTip1.SetToolTip(this.label1, "别问了别问了");
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(221, 314);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.delayBox);
             this.Controls.Add(this.second);
@@ -297,6 +315,8 @@ namespace Dalamud.Updater
         private System.Windows.Forms.StatusStrip statusStrip1;
         public System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
         public System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 
