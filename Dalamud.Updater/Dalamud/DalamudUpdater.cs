@@ -46,7 +46,18 @@ namespace XIVLauncher.Common.Dalamud
         public const string REMOTE_BASE = "https://xlasset-1253720819.cos.ap-nanjing.myqcloud.com/DalamudVersion.json";
         private readonly TimeSpan defaultTimeout = TimeSpan.FromMinutes(25);
 
-        public DownloadState State { get; private set; } = DownloadState.Unknown;
+        private DownloadState _state;
+        public DownloadState State
+        {
+            get { return _state; }
+            
+            private set
+            {
+                _state = value;
+                OnUpdateEvent?.Invoke(this._state);
+            }
+        }
+
         public bool IsStaging { get; private set; } = false;
 
         private FileInfo runnerInternal;
@@ -73,6 +84,7 @@ namespace XIVLauncher.Common.Dalamud
 
         public enum DownloadState
         {
+            Checking,
             Unknown,
             Done,
             Failed,
@@ -81,6 +93,7 @@ namespace XIVLauncher.Common.Dalamud
 
         public DalamudUpdater(DirectoryInfo addonDirectory, DirectoryInfo runtimeDirectory, DirectoryInfo assetDirectory, DirectoryInfo configDirectory)
         {
+            this.State = DownloadState.Unknown;
             this.addonDirectory = addonDirectory;
             this.runtimeDirectory = runtimeDirectory;
             this.assetDirectory = assetDirectory;
@@ -112,8 +125,9 @@ namespace XIVLauncher.Common.Dalamud
         private readonly static object Mutex = new object();
         public void Run()
         {
-            lock (Mutex)
-            {
+            //lock (Mutex)
+            //{
+                this.State = DownloadState.Checking;
                 Log.Information("[DUPDATE] Starting...");
                 Task.Run(async () =>
                 {
@@ -136,7 +150,7 @@ namespace XIVLauncher.Common.Dalamud
                     //Mutex.Close();
                     OnUpdateEvent?.Invoke(this.State);
                 });
-            }
+            //}
 
         }
 
