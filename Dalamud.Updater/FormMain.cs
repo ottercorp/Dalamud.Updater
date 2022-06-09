@@ -52,6 +52,33 @@ namespace Dalamud.Updater
 
         private readonly DalamudUpdater dalamudUpdater;
 
+        #region Oversea Accelerate Helper
+        private bool RemoteFileExists(string url)
+        {
+            try
+            {
+                HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
+                request.Method = "HEAD";
+                HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                response.Close();
+                return (response.StatusCode == HttpStatusCode.OK);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private string GetProperUrl(string url)
+        {
+            if (RemoteFileExists(url))
+                return url;
+            var accUrl = url.Replace("/updater.xml", "/acce_updater.xml").Replace("ap-nanjing", "accelerate");
+            return accUrl;
+        }
+
+        #endregion
+
         public static string GetAppSettings(string key, string def = null)
         {
             try
@@ -171,7 +198,7 @@ namespace Dalamud.Updater
             try
             {
                 var localVersion = Assembly.GetExecutingAssembly().GetName().Version;
-                var remoteUrl = updateUrl;
+                var remoteUrl = GetProperUrl(updateUrl);
                 XmlDocument remoteXml = new XmlDocument();
                 remoteXml.Load(remoteUrl);
                 foreach (XmlNode child in remoteXml.SelectNodes("/item/version"))
