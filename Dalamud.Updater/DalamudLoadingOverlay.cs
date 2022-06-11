@@ -38,20 +38,21 @@ namespace Dalamud.Updater
         {
             switch (progress)
             {
+                // 文本太长会一个字都不显示
                 case IDalamudLoadingOverlay.DalamudUpdateStep.Dalamud:
-                    OnStatusLabel?.Invoke("正在更新核心……");
+                    OnStatusLabel?.Invoke("正在更新核心");
                     break;
 
                 case IDalamudLoadingOverlay.DalamudUpdateStep.Assets:
-                    OnStatusLabel?.Invoke("正在更新资源文件...");
+                    OnStatusLabel?.Invoke("正在更新资源");
                     break;
 
                 case IDalamudLoadingOverlay.DalamudUpdateStep.Runtime:
-                    OnStatusLabel?.Invoke("正在更新运行库...");
+                    OnStatusLabel?.Invoke("正在更新运行库");
                     break;
 
                 case IDalamudLoadingOverlay.DalamudUpdateStep.Unavailable:
-                    OnStatusLabel?.Invoke("由于游戏更新，插件目前无法使用。");
+                    OnStatusLabel?.Invoke("暂时无法使用");
                     break;
 
                 default:
