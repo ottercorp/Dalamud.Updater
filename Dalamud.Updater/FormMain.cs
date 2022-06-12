@@ -591,7 +591,7 @@ namespace Dalamud.Updater
                 ConfigurationPath = Path.Combine(xivlauncherDir, "dalamudConfig.json"),
                 PluginDirectory = Path.Combine(xivlauncherDir, "installedPlugins"),
                 DefaultPluginDirectory = Path.Combine(xivlauncherDir, "devPlugins"),
-                AssetDirectory = Path.Combine(xivlauncherDir, "dalamudAssets"),
+                AssetDirectory = this.dalamudUpdater.AssetDirectory.FullName,
                 GameVersion = gameVerStr,
                 Language = "4",
                 OptOutMbCollection = false,
