@@ -39,7 +39,8 @@ namespace XIVLauncher.Common.Dalamud
             {
                 NoCache = true,
             };
-
+            client.DefaultRequestHeaders.Add("User-Agent", "Wget/1.21.1 (linux-gnu)");
+            client.DefaultRequestHeaders.Add("accept-encoding", "gzip, deflate, br");
             using var sha1 = SHA1.Create();
 
             Log.Verbose("[DASSET] Starting asset download");
@@ -87,9 +88,9 @@ namespace XIVLauncher.Common.Dalamud
 
                 if (!File.Exists(filePath) || isRefreshNeeded || refreshFile)
                 {
-                    Log.Verbose("[DASSET] Downloading {0} to {1}...", entry.Url, entry.FileName);
+                    Log.Information("[DASSET] Downloading {0} to {1}...", entry.Url, entry.FileName);
 
-                    var request = await client.GetAsync(entry.Url + "?t=" + DateTime.Now.Ticks).ConfigureAwait(true);
+                    var request = await client.GetAsync(entry.Url).ConfigureAwait(true);
                     request.EnsureSuccessStatusCode();
                     File.WriteAllBytes(filePath, await request.Content.ReadAsByteArrayAsync().ConfigureAwait(true));
 
