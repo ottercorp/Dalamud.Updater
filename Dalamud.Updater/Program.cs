@@ -66,8 +66,8 @@ namespace Dalamud.Updater
 
         static bool ProcessMutexInstance() {
             Process current = Process.GetCurrentProcess();
-            //var processes = Process.GetProcessesByName(current.ProcessName).Where(x=>(x.Id != current.Id && x.MainModule.FileName == current.MainModule.FileName));
-            var processes = Process.GetProcessesByName(current.ProcessName).Where(x => (x.Id != current.Id));
+            var processes = Process.GetProcessesByName(current.ProcessName).Where(x => (x.Id != current.Id && x.MainModule.FileName == current.MainModule.FileName));
+            //var processes = Process.GetProcessesByName(current.ProcessName).Where(x => (x.Id != current.Id));
             if (processes.ToList().Count == 0)
                 return false;
             foreach (var p in processes) { 
