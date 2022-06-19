@@ -623,6 +623,23 @@ namespace Dalamud.Updater
             return false;
         }
 
+        private void DetectSomeShit(Process process)
+        {
+            try
+            {
+                for (var j = 0; j < process.Modules.Count; j++)
+                {
+                    if (process.Modules[j].ModuleName == "ws2detour_x64.dll")
+                    {
+                        MessageBox.Show("检测到使用网易UU加速器进程模式,有可能注入无反应。\n请使用路由模式。", windowsTitle, MessageBoxButtons.OK);
+                    }
+                }
+            }
+            catch
+            {
+            }
+        }
+
         private bool Inject(int pid, int injectDelay = 0)
         {
             var process = Process.GetProcessById(pid);
@@ -630,6 +647,7 @@ namespace Dalamud.Updater
             {
                 return false;
             }
+            DetectSomeShit(process);
             //var dalamudStartInfo = Convert.ToBase64String(Encoding.UTF8.GetBytes(GeneratingDalamudStartInfo(process)));
             //var startInfo = new ProcessStartInfo(injectorFile, $"{pid} {dalamudStartInfo}");
             //startInfo.WorkingDirectory = dalamudPath.FullName;
