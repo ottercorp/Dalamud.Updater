@@ -52,6 +52,7 @@ namespace Dalamud.Updater
 
         private readonly DalamudUpdater dalamudUpdater;
 
+        public string windowsTitle = "獭纪委 v" + Assembly.GetExecutingAssembly().GetName().Version;
         #region Oversea Accelerate Helper
         private bool RemoteFileExists(string url)
         {
@@ -125,15 +126,15 @@ namespace Dalamud.Updater
             checkTimes++;
             if (checkTimes == 8)
             {
-                MessageBox.Show("点这么多遍干啥？", "獭纪委");
+                MessageBox.Show("点这么多遍干啥？", windowsTitle);
             }
             else if (checkTimes == 9)
             {
-                MessageBox.Show("还点？", "獭纪委");
+                MessageBox.Show("还点？", windowsTitle);
             }
             else if (checkTimes > 10)
             {
-                MessageBox.Show("有问题你发日志，别搁这瞎几把点了", "獭纪委");
+                MessageBox.Show("有问题你发日志，别搁这瞎几把点了", windowsTitle);
             }
             dalamudUpdater.Run();
         }
@@ -223,7 +224,7 @@ namespace Dalamud.Updater
             switch (value)
             {
                 case DalamudUpdater.DownloadState.Failed:
-                    MessageBox.Show("更新Dalamud失败", "獭纪委", MessageBoxButtons.YesNo);
+                    MessageBox.Show("更新Dalamud失败", windowsTitle, MessageBoxButtons.YesNo);
                     setStatus("更新Dalamud失败");
                     break;
                 case DalamudUpdater.DownloadState.Unknown:
@@ -636,7 +637,7 @@ namespace Dalamud.Updater
             Log.Information($"[Updater] dalamudUpdater.State:{dalamudUpdater.State}");
             if (dalamudUpdater.State == DalamudUpdater.DownloadState.NoIntegrity)
             {
-                if (MessageBox.Show("当前Dalamud版本可能与游戏不兼容,确定注入吗？", "獭纪委", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                if (MessageBox.Show("当前Dalamud版本可能与游戏不兼容,确定注入吗？", windowsTitle, MessageBoxButtons.YesNo) != DialogResult.Yes)
                 {
                     return false;
                 }
