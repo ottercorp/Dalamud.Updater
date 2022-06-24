@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Dalamud.Updater;
 using Newtonsoft.Json;
 using Serilog;
 //using XIVLauncher.Common.PlatformAbstractions;
@@ -417,7 +418,8 @@ namespace XIVLauncher.Common.Dalamud
                 File.Delete(downloadPath);
 
             await this.DownloadFile(version.DownloadUrl, downloadPath, this.defaultTimeout).ConfigureAwait(false);
-            ZipFile.ExtractToDirectory(downloadPath, addonPath.FullName);
+            SystemHelper.Un7za(downloadPath, addonPath.FullName);
+            //ZipFile.ExtractToDirectory(downloadPath, addonPath.FullName);
 
             File.Delete(downloadPath);
 
