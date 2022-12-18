@@ -30,7 +30,8 @@ namespace XIVLauncher.Common.Dalamud
 
         public static async Task<DirectoryInfo> EnsureAssets(DirectoryInfo baseDir)
         {
-            using var client = new HttpClient
+            var clientHandler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
+            using var client = new HttpClient(clientHandler)
             {
                 Timeout = TimeSpan.FromMinutes(4),
             };

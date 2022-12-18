@@ -45,7 +45,7 @@ namespace XIVLauncher.Common.Dalamud
         private readonly DirectoryInfo configDirectory;
         //private readonly IUniqueIdCache? cache;
         public const string REMOTE_BASE = "https://aonyx.ffxiv.wang/";
-        public const string REMOTE_VERSION = REMOTE_BASE + "Dalamud/Release/VersionInfo?track=release";
+        public const string REMOTE_VERSION = REMOTE_BASE + "Dalamud/Release/VersionInfo?track=";
         public const string REMOTE_DOTNET = REMOTE_BASE + "Dalamud/Release/Runtime/DotNet/{0}";
         public const string REMOTE_DESKTOP = REMOTE_BASE + "Dalamud/Release/Runtime/WindowsDesktop/{0}";
         private readonly TimeSpan defaultTimeout = TimeSpan.FromMinutes(25);
@@ -173,7 +173,7 @@ namespace XIVLauncher.Common.Dalamud
                 NoCache = true,
             };
 
-            var versionInfoJsonRelease = await client.GetStringAsync(REMOTE_VERSION).ConfigureAwait(false);
+            var versionInfoJsonRelease = await client.GetStringAsync(REMOTE_VERSION + "release").ConfigureAwait(false);
 
             DalamudVersionInfo versionInfoRelease = JsonConvert.DeserializeObject<DalamudVersionInfo>(versionInfoJsonRelease);
 

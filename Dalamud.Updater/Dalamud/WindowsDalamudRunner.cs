@@ -12,12 +12,14 @@ public static class WindowsDalamudRunner
 {
     public static void Inject(FileInfo runner, int gamePid, IDictionary<string, string> environment, DalamudLoadMethod loadMethod, DalamudStartInfo startInfo)
     {
-
+        // Process process = Process.GetProcessById(gamePid);
+        // var gamePath = Path.Combine(process.MainModule.FileName, "..", "..");
         var launchArguments = new List<string>
         {
-            "inject",
+            "inject -v",
             $"{gamePid}",
             //$"--all --warn",
+            //$"--game=\"{gamePath}\"",
             $"--dalamud-working-directory=\"{startInfo.WorkingDirectory}\"",
             $"--dalamud-configuration-path=\"{startInfo.ConfigurationPath}\"",
             $"--dalamud-plugin-directory=\"{startInfo.PluginDirectory}\"",
@@ -42,6 +44,8 @@ public static class WindowsDalamudRunner
             else
                 psi.EnvironmentVariables.Add(keyValuePair.Key, keyValuePair.Value);
         }
+
+        // psi.EnvironmentVariables.Add("DALAMUD_RUNTIME", startInfo.RuntimeDirectory);
 
         var dalamudProcess = Process.Start(psi);
         while (!dalamudProcess.StandardOutput.EndOfStream)

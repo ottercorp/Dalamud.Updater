@@ -38,7 +38,6 @@ namespace Dalamud.Updater
             this.comboBoxFFXIV = new System.Windows.Forms.ComboBox();
             this.buttonInject = new System.Windows.Forms.Button();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.checkBoxAcce = new System.Windows.Forms.CheckBox();
             this.checkBoxAutoInject = new System.Windows.Forms.CheckBox();
             this.DalamudUpdaterIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -119,18 +118,6 @@ namespace Dalamud.Updater
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "加入QQ频道";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-            // 
-            // checkBoxAcce
-            // 
-            this.checkBoxAcce.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBoxAcce.AutoSize = true;
-            this.checkBoxAcce.Location = new System.Drawing.Point(133, 8);
-            this.checkBoxAcce.Name = "checkBoxAcce";
-            this.checkBoxAcce.Size = new System.Drawing.Size(78, 19);
-            this.checkBoxAcce.TabIndex = 4;
-            this.checkBoxAcce.Text = "国际加速";
-            this.checkBoxAcce.UseVisualStyleBackColor = true;
-            this.checkBoxAcce.CheckedChanged += new System.EventHandler(this.checkBoxAcce_CheckedChanged);
             // 
             // checkBoxAutoInject
             // 
@@ -269,7 +256,6 @@ namespace Dalamud.Updater
             this.Controls.Add(this.labelVer);
             this.Controls.Add(this.checkBoxAutoStart);
             this.Controls.Add(this.checkBoxAutoInject);
-            this.Controls.Add(this.checkBoxAcce);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.comboBoxFFXIV);
             this.Controls.Add(this.labelVersion);
@@ -301,7 +287,6 @@ namespace Dalamud.Updater
         private System.Windows.Forms.ComboBox comboBoxFFXIV;
         private System.Windows.Forms.Button buttonInject;
         private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.CheckBox checkBoxAcce;
         private System.Windows.Forms.CheckBox checkBoxAutoInject;
         private System.Windows.Forms.NotifyIcon DalamudUpdaterIcon;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;

@@ -47,6 +47,7 @@ namespace Dalamud.Updater
 
         private readonly DirectoryInfo addonDirectory;
         private readonly DirectoryInfo runtimeDirectory;
+        private readonly DirectoryInfo xivlauncherDirectory;
         private readonly DirectoryInfo assetDirectory;
         private readonly DirectoryInfo configDirectory;
 
@@ -144,23 +145,34 @@ namespace Dalamud.Updater
             return Assembly.GetExecutingAssembly().GetName().Version;
         }
 
-        private Version getVersion()
+        private string getVersion()
         {
             var rgx = new Regex(@"^\d+\.\d+\.\d+\.\d+$");
+            var stgRgx = new Regex(@"^[\da-zA-Z]{7}$");
             var di = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "addon", "Hooks"));
             var version = new Version("0.0.0.0");
             if (!di.Exists)
-                return version;
+                return version.ToString();
             var dirs = di.GetDirectories("*", SearchOption.TopDirectoryOnly).Where(dir => rgx.IsMatch(dir.Name)).ToArray();
+            bool releaseVersionExists = false;
             foreach (var dir in dirs)
             {
                 var newVersion = new Version(dir.Name);
                 if (newVersion > version)
                 {
+                    releaseVersionExists = true;
                     version = newVersion;
                 }
             }
-            return version;
+            if (!releaseVersionExists)
+            {
+                var stgDirs = di.GetDirectories("*", SearchOption.TopDirectoryOnly).Where(dir => stgRgx.IsMatch(dir.Name)).ToArray();
+                if (stgDirs.Length > 0)
+                {
+                    return stgDirs[0].Name;
+                }
+            }
+            return version.ToString();
         }
 
 
@@ -178,8 +190,9 @@ namespace Dalamud.Updater
             dalamudLoadingOverlay.OnStatusLabel += setStatus;
             addonDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "addon"));
             runtimeDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "runtime"));
+            xivlauncherDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher"));
             assetDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher", "dalamudAssets"));
-            configDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher", "pluginConfigs"));
+            configDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher"));
             //labelVersion.Text = string.Format("卫月版本 : {0}", getVersion());
             delayBox.Value = (decimal)this.injectDelaySeconds;
             SetDalamudVersion();
@@ -287,10 +300,6 @@ namespace Dalamud.Updater
             if (GetAppSettings("AutoStart", "false") == "true")
             {
                 this.checkBoxAutoStart.Checked = true;
-            }
-            if (GetAppSettings("Accelerate", "false") == "true")
-            {
-                this.checkBoxAcce.Checked = true;
             }
             var tempInjectDelaySeconds = GetAppSettings("InjectDelaySeconds", "0");
             if (tempInjectDelaySeconds != "0")
@@ -519,8 +528,11 @@ namespace Dalamud.Updater
                 }
                 else
                 {
-                    MessageBox.Show(@"没有可用更新，请稍后查看。", @"更新不可用",
+                    Log.Information("[Updater] 没有可用的卫月更新器更新，请稍后查看。");
+                    /*
+                    MessageBox.Show(@"没有可用的更新器更新，请稍后查看。", @"更新不可用",
                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    */
                 }
             }
             else
@@ -583,7 +595,7 @@ namespace Dalamud.Updater
         {
             var ffxivDir = Path.GetDirectoryName(process.MainModule.FileName);
             var appDataDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            var xivlauncherDir = Path.Combine(appDataDir, "XIVLauncher");
+            var xivlauncherDir = xivlauncherDirectory.FullName;
 
             var gameVerStr = File.ReadAllText(Path.Combine(ffxivDir, "ffxivgame.ver"));
 
@@ -592,11 +604,11 @@ namespace Dalamud.Updater
                 ConfigurationPath = Path.Combine(xivlauncherDir, "dalamudConfig.json"),
                 PluginDirectory = Path.Combine(xivlauncherDir, "installedPlugins"),
                 DefaultPluginDirectory = Path.Combine(xivlauncherDir, "devPlugins"),
+                RuntimeDirectory = runtimeDirectory.FullName,
                 AssetDirectory = this.dalamudUpdater.AssetDirectory.FullName,
                 GameVersion = gameVerStr,
                 Language = "4",
                 OptOutMbCollection = false,
-                GlobalAccelerate = this.checkBoxAcce.Checked,
                 WorkingDirectory = dalamudPath,
                 DelayInitializeMs = injectDelay
             };
@@ -723,11 +735,6 @@ namespace Dalamud.Updater
         private void checkBoxAutoInject_CheckedChanged(object sender, EventArgs e)
         {
             AddOrUpdateAppSettings("AutoInject", checkBoxAutoInject.Checked ? "true" : "false");
-        }
-
-        private void checkBoxAcce_CheckedChanged(object sender, EventArgs e)
-        {
-            AddOrUpdateAppSettings("Accelerate", checkBoxAcce.Checked ? "true" : "false");
         }
 
         private void delayBox_ValueChanged(object sender, EventArgs e)
