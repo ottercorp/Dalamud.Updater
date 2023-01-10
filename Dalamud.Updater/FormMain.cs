@@ -149,7 +149,7 @@ namespace Dalamud.Updater
         {
             var rgx = new Regex(@"^\d+\.\d+\.\d+\.\d+$");
             var stgRgx = new Regex(@"^[\da-zA-Z]{7}$");
-            var di = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "addon", "Hooks"));
+            var di = new DirectoryInfo(Path.Combine(addonDirectory.FullName, "Hooks"));
             var version = new Version("0.0.0.0");
             if (!di.Exists)
                 return version.ToString();
@@ -188,8 +188,8 @@ namespace Dalamud.Updater
             dalamudLoadingOverlay.OnProgressBar += setProgressBar;
             dalamudLoadingOverlay.OnSetVisible += setVisible;
             dalamudLoadingOverlay.OnStatusLabel += setStatus;
-            addonDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "addon"));
-            runtimeDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "runtime"));
+            addonDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher", "addon"));
+            runtimeDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher", "runtime"));
             xivlauncherDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher"));
             assetDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher", "dalamudAssets"));
             configDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher"));
@@ -328,7 +328,13 @@ namespace Dalamud.Updater
                 Directory.Delete(shitUIRes, true);
             }
 
-            var shitRuntime = Path.Combine(Directory.GetCurrentDirectory(), "XIVLauncher", "runtime");
+            var shitAddon = Path.Combine(Directory.GetCurrentDirectory(), "addon");
+            if (Directory.Exists(shitAddon))
+            {
+                Directory.Delete(shitAddon, true);
+            }
+
+            var shitRuntime = Path.Combine(Directory.GetCurrentDirectory(), "runtime");
             if (Directory.Exists(shitRuntime))
             {
                 Directory.Delete(shitRuntime, true);
