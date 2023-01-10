@@ -13,6 +13,9 @@ using System.Windows;
 using Dalamud.Updater;
 using Newtonsoft.Json;
 using Serilog;
+using SharpCompress.Archives.SevenZip;
+using SharpCompress.Common;
+using SharpCompress.Readers;
 //using XIVLauncher.Common.PlatformAbstractions;
 using XIVLauncher.Common.Util;
 
@@ -418,8 +421,27 @@ namespace XIVLauncher.Common.Dalamud
                 File.Delete(downloadPath);
 
             await this.DownloadFile(version.DownloadUrl, downloadPath, this.defaultTimeout).ConfigureAwait(false);
-            SystemHelper.Un7za(downloadPath, addonPath.FullName);
-            //ZipFile.ExtractToDirectory(downloadPath, addonPath.FullName);
+
+            if (version.DownloadUrl.EndsWith("zip", StringComparison.OrdinalIgnoreCase))
+            {
+                ZipFile.ExtractToDirectory(downloadPath, addonPath.FullName);
+            }
+            else if (version.DownloadUrl.EndsWith("7z", StringComparison.OrdinalIgnoreCase))
+            {
+                using (var archive = SevenZipArchive.Open(downloadPath))
+                {
+                    var reader = archive.ExtractAllEntries();
+                    while (reader.MoveToNextEntry())
+                    {
+                        if (!reader.Entry.IsDirectory)
+                            reader.WriteEntryToDirectory(addonPath.FullName, new ExtractionOptions() { ExtractFullPath = true, Overwrite = true });
+                    }
+                }
+            }
+            else
+            {
+                Log.Error("[DUPDATE] Unsupported file.");
+            }
 
             File.Delete(downloadPath);
 
