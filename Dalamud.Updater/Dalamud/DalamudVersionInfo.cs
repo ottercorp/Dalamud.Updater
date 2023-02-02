@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using Newtonsoft.Json;
 
 namespace XIVLauncher.Common.Dalamud
@@ -13,6 +13,7 @@ namespace XIVLauncher.Common.Dalamud
         public string DownloadUrl { get; set; }
         public string DotnetUrl { get; set; }
         public string DesktopUrl { get; set; }
+        public string Hash { get; set; }
 
         public static DalamudVersionInfo Load(FileInfo file) =>
             JsonConvert.DeserializeObject<DalamudVersionInfo>(File.ReadAllText(file.FullName));
