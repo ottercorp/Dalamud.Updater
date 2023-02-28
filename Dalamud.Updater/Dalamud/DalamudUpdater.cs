@@ -52,6 +52,7 @@ namespace XIVLauncher.Common.Dalamud
         public const string REMOTE_DOTNET = REMOTE_BASE + "Dalamud/Release/Runtime/DotNet/{0}";
         public const string REMOTE_DESKTOP = REMOTE_BASE + "Dalamud/Release/Runtime/WindowsDesktop/{0}";
         private readonly TimeSpan defaultTimeout = TimeSpan.FromMinutes(25);
+        private static string onlineHash = string.Empty;
 
         private DownloadState _state;
         public DownloadState State
@@ -217,6 +218,8 @@ namespace XIVLauncher.Common.Dalamud
 
             var versionInfoJson = JsonConvert.SerializeObject(remoteVersionInfo);
 
+            onlineHash = remoteVersionInfo.Hash;
+
             var addonPath = new DirectoryInfo(Path.Combine(this.addonDirectory.FullName, "Hooks"));
             var currentVersionPath = new DirectoryInfo(Path.Combine(addonPath.FullName, remoteVersionInfo.AssemblyVersion));
             var runtimePaths = new DirectoryInfo[]
@@ -343,6 +346,20 @@ namespace XIVLauncher.Common.Dalamud
                 {
                     Log.Error("[DUPDATE] No hashes.json");
                     return false;
+                }
+
+                if (!string.IsNullOrEmpty(onlineHash))
+                {
+                    using var stream = File.OpenRead(hashesPath);
+                    using var md5 = MD5.Create();
+
+                    var hashHash = BitConverter.ToString(md5.ComputeHash(stream)).ToUpperInvariant().Replace("-", string.Empty);
+
+                    if (onlineHash != hashHash)
+                    {
+                        Log.Error("[UPDATE] hashes.json Hash Check Failed");
+                        return false;
+                    }
                 }
 
                 var hashes = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(hashesPath));
