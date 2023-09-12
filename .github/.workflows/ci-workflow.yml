@@ -1,5 +1,8 @@
 name: Build Updater
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
 concurrency: build_xl
 
 jobs:
