@@ -36,9 +36,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: src\Releases\**
-          name: Release
-          body_path: RELEASE.md
+          files: Dalamud.Updater\bin\Release\net48\**
+          name: Release ${{ github.ref }}
           prerelease: true
 
   build:
