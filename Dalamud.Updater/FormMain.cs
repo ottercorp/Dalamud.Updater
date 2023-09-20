@@ -77,7 +77,7 @@ namespace Dalamud.Updater
         private string getVersion()
         {
             var rgx = new Regex(@"^\d+\.\d+\.\d+\.\d+$");
-            var stgRgx = new Regex(@"^[\da-zA-Z]{7}$");
+            var stgRgx = new Regex(@"^[\da-zA-Z]{8}$");
             var di = new DirectoryInfo(Path.Combine(addonDirectory.FullName, "Hooks"));
             var version = new Version("0.0.0.0");
             if (!di.Exists)
