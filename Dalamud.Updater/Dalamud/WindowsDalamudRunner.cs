@@ -10,7 +10,7 @@ using XIVLauncher.Common.Dalamud;
 
 public static class WindowsDalamudRunner
 {
-    public static void Inject(FileInfo runner, int gamePid, IDictionary<string, string> environment, DalamudLoadMethod loadMethod, DalamudStartInfo startInfo)
+    public static void Inject(FileInfo runner, int gamePid, IDictionary<string, string> environment, DalamudLoadMethod loadMethod, DalamudStartInfo startInfo,bool safeMode = false)
     {
         // Process process = Process.GetProcessById(gamePid);
         // var gamePath = Path.Combine(process.MainModule.FileName, "..", "..");
@@ -29,6 +29,7 @@ public static class WindowsDalamudRunner
             $"--dalamud-delay-initialize={startInfo.DelayInitializeMs}"
         };
 
+        if (safeMode) launchArguments.Add("--no-plugin");
 
         var psi = new ProcessStartInfo(runner.FullName) {
             Arguments = string.Join(" ", launchArguments),

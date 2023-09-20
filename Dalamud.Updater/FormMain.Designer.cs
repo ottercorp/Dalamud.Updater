@@ -53,6 +53,7 @@ namespace Dalamud.Updater
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.label1 = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.checkBoxSafeMode = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.delayBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -85,7 +86,6 @@ namespace Dalamud.Updater
             // 
             this.comboBoxFFXIV.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxFFXIV.Cursor = System.Windows.Forms.Cursors.Default;
             this.comboBoxFFXIV.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxFFXIV.FormattingEnabled = true;
             this.comboBoxFFXIV.ImeMode = System.Windows.Forms.ImeMode.On;
@@ -100,7 +100,7 @@ namespace Dalamud.Updater
             this.buttonInject.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonInject.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonInject.Location = new System.Drawing.Point(11, 186);
+            this.buttonInject.Location = new System.Drawing.Point(11, 213);
             this.buttonInject.Name = "buttonInject";
             this.buttonInject.Size = new System.Drawing.Size(196, 79);
             this.buttonInject.TabIndex = 0;
@@ -111,7 +111,7 @@ namespace Dalamud.Updater
             // linkLabel1
             // 
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(134, 268);
+            this.linkLabel1.Location = new System.Drawing.Point(134, 295);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(77, 15);
             this.linkLabel1.TabIndex = 3;
@@ -177,7 +177,7 @@ namespace Dalamud.Updater
             // labelVer
             // 
             this.labelVer.AutoSize = true;
-            this.labelVer.Location = new System.Drawing.Point(9, 268);
+            this.labelVer.Location = new System.Drawing.Point(9, 295);
             this.labelVer.Name = "labelVer";
             this.labelVer.Size = new System.Drawing.Size(44, 15);
             this.labelVer.TabIndex = 8;
@@ -186,7 +186,7 @@ namespace Dalamud.Updater
             // delayLabel
             // 
             this.delayLabel.AutoSize = true;
-            this.delayLabel.Location = new System.Drawing.Point(12, 139);
+            this.delayLabel.Location = new System.Drawing.Point(12, 165);
             this.delayLabel.Name = "delayLabel";
             this.delayLabel.Size = new System.Drawing.Size(59, 15);
             this.delayLabel.TabIndex = 10;
@@ -195,7 +195,7 @@ namespace Dalamud.Updater
             // second
             // 
             this.second.AutoSize = true;
-            this.second.Location = new System.Drawing.Point(188, 139);
+            this.second.Location = new System.Drawing.Point(188, 165);
             this.second.Name = "second";
             this.second.Size = new System.Drawing.Size(20, 15);
             this.second.TabIndex = 11;
@@ -203,7 +203,7 @@ namespace Dalamud.Updater
             // 
             // delayBox
             // 
-            this.delayBox.Location = new System.Drawing.Point(77, 136);
+            this.delayBox.Location = new System.Drawing.Point(77, 162);
             this.delayBox.Name = "delayBox";
             this.delayBox.Size = new System.Drawing.Size(104, 23);
             this.delayBox.TabIndex = 12;
@@ -214,7 +214,7 @@ namespace Dalamud.Updater
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar1,
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 292);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 316);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(221, 22);
             this.statusStrip1.TabIndex = 13;
@@ -236,18 +236,31 @@ namespace Dalamud.Updater
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.Crimson;
-            this.label1.Location = new System.Drawing.Point(12, 164);
+            this.label1.Location = new System.Drawing.Point(12, 191);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(200, 17);
             this.label1.TabIndex = 14;
             this.label1.Text = "自动注入黑屏请先尝试增加延迟！！";
             this.toolTip1.SetToolTip(this.label1, "别问了别问了");
             // 
+            // checkBoxSafeMode
+            // 
+            this.checkBoxSafeMode.AutoSize = true;
+            this.checkBoxSafeMode.Location = new System.Drawing.Point(11, 137);
+            this.checkBoxSafeMode.Name = "checkBoxSafeMode";
+            this.checkBoxSafeMode.Size = new System.Drawing.Size(104, 19);
+            this.checkBoxSafeMode.TabIndex = 15;
+            this.checkBoxSafeMode.Text = "禁用所有插件";
+            this.toolTip1.SetToolTip(this.checkBoxSafeMode, "禁用所有插件，以避免爆炸");
+            this.checkBoxSafeMode.UseVisualStyleBackColor = true;
+            this.checkBoxSafeMode.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(221, 314);
+            this.ClientSize = new System.Drawing.Size(221, 338);
+            this.Controls.Add(this.checkBoxSafeMode);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.delayBox);
@@ -302,6 +315,7 @@ namespace Dalamud.Updater
         public System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.CheckBox checkBoxSafeMode;
     }
 }
 

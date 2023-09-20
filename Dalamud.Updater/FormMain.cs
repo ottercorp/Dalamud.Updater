@@ -687,7 +687,7 @@ namespace Dalamud.Updater
             if (string.IsNullOrWhiteSpace(prevDalamudRuntime))
                 environment.Add("DALAMUD_RUNTIME", runtimeDirectory.FullName);
             */
-            WindowsDalamudRunner.Inject(dalamudUpdater.Runner, process.Id, environment, DalamudLoadMethod.DllInject, dalamudStartInfo);
+            WindowsDalamudRunner.Inject(dalamudUpdater.Runner, process.Id, environment, DalamudLoadMethod.DllInject, dalamudStartInfo,this.safeMode);
             return true;
         }
 
@@ -789,6 +789,12 @@ namespace Dalamud.Updater
                 toolStripProgressBar1.Visible = v;
                 //toolStripStatusLabel1.Visible = v;
             }
+        }
+
+        private bool safeMode = false;  
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            this.safeMode = this.checkBoxSafeMode.Checked;
         }
     }
 }
