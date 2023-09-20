@@ -13,10 +13,10 @@ namespace Dalamud.Updater
 {
     public sealed class Config
     {
-        public bool AutoStart = false;
-        public bool AutoInject = false;
-        public double InjectDelaySeconds = 0f;
-        public bool SafeMode = false;
+        public bool AutoStart { get; set; }
+        public bool AutoInject { get; set; }
+        public double InjectDelaySeconds { get; set; }
+        public bool SafeMode { get; set; }
 
         private static readonly JsonSerializerSettings SerializerSettings = new()
         {
@@ -48,7 +48,12 @@ namespace Dalamud.Updater
             {
                 Log.Error(ex, "Failed to load Config at {0}", path);
             }
-            deserialized ??= new Config();
+            deserialized ??= new Config() { 
+                AutoInject = false,
+                AutoStart = false,
+                InjectDelaySeconds = 0,
+                SafeMode = false,
+            };
             //Log.Information(JsonConvert.SerializeObject(deserialized), SerializerSettings);
             deserialized.configPath = path;
             return deserialized;

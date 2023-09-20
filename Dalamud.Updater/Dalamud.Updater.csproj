@@ -31,7 +31,7 @@
     </PropertyGroup>
   </Target>
   <ItemGroup>
-    <PackageReference Include="Autoupdater.NET.Official" Version="1.7.6" />
+    <PackageReference Include="Autoupdater.NET.Official" Version="1.8.4" />
     <PackageReference Include="Costura.Fody" Version="5.7.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

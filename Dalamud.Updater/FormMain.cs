@@ -20,7 +20,6 @@ using System.IO.Compression;
 using System.Configuration;
 using Newtonsoft.Json.Linq;
 using System.Security.Principal;
-using System.Xml;
 using XIVLauncher.Common.Dalamud;
 using Serilog.Core;
 using Serilog;
@@ -30,7 +29,7 @@ namespace Dalamud.Updater
 {
     public partial class FormMain : Form
     {
-        private string updateUrl = "https://dalamud-1253720819.cos.ap-nanjing.myqcloud.com/updater.xml";
+        private const string UPDATEURL = "https://aonyx.ffxiv.wang/Updater/Release/VersionInfo";
 
         // private List<string> pidList = new List<string>();
         private bool firstHideHint = true;
@@ -49,32 +48,6 @@ namespace Dalamud.Updater
         private readonly DalamudUpdater dalamudUpdater;
 
         public string windowsTitle = "獭纪委 v" + Assembly.GetExecutingAssembly().GetName().Version;
-        #region Oversea Accelerate Helper
-        private bool RemoteFileExists(string url)
-        {
-            try
-            {
-                HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
-                request.Method = "HEAD";
-                HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-                response.Close();
-                return (response.StatusCode == HttpStatusCode.OK);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private string GetProperUrl(string url)
-        {
-            if (RemoteFileExists(url))
-                return url;
-            var accUrl = url.Replace("/updater.xml", "/acce_updater.xml").Replace("ap-nanjing", "accelerate");
-            return accUrl;
-        }
-
-        #endregion
 
         private int checkTimes = 0;
 
@@ -136,7 +109,6 @@ namespace Dalamud.Updater
         {
             InitLogging();
             InitializeComponent();
-            InitializeConfig();
             InitializePIDCheck();
             InitializeDeleteShit();
             addonDirectory = Directory.GetParent(Assembly.GetExecutingAssembly().Location);
@@ -150,7 +122,6 @@ namespace Dalamud.Updater
             assetDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher", "dalamudAssets"));
             configDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher"));
             //labelVersion.Text = string.Format("卫月版本 : {0}", getVersion());
-            SetDalamudVersion();
             string[] strArgs = Environment.GetCommandLineArgs();
             if (strArgs.Length >= 2 && strArgs[1].Equals("-startup"))
             {
@@ -162,29 +133,17 @@ namespace Dalamud.Updater
                     this.DalamudUpdaterIcon.ShowBalloonTip(2000, "自启动成功", "放心，我会在后台偷偷干活的。", ToolTipIcon.Info);
                 }
             }
-            try
-            {
-                var localVersion = Assembly.GetExecutingAssembly().GetName().Version;
-                var remoteUrl = GetProperUrl(updateUrl);
-                XmlDocument remoteXml = new XmlDocument();
-                remoteXml.Load(remoteUrl);
-                foreach (XmlNode child in remoteXml.SelectNodes("/item/version"))
-                {
-                    if (child.InnerText != localVersion.ToString())
-                    {
-                        AutoUpdater.Start(remoteUrl);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "程序启动版本检查失败",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
             dalamudUpdater = new DalamudUpdater(addonDirectory, runtimeDirectory, assetDirectory, configDirectory);
             dalamudUpdater.Overlay = dalamudLoadingOverlay;
             dalamudUpdater.OnUpdateEvent += DalamudUpdater_OnUpdateEvent;
+            InitializeConfig();
+            labelVer.Text = $"v{Assembly.GetExecutingAssembly().GetName().Version}";
+            UpdateFormConfig();
+            UpdateSelf();
+
+            SetDalamudVersion();
+
+            CheckUpdate();
         }
 
         private void DalamudUpdater_OnUpdateEvent(DalamudUpdater.DownloadState value)
@@ -249,9 +208,6 @@ namespace Dalamud.Updater
         private void InitializeConfig()
         {
             this.config = Config.Load(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "DalamudUpdaterConfig.json"));
-            this.checkBoxAutoInject.Checked = this.config.AutoInject;
-            this.checkBoxAutoStart.Checked = this.config.AutoStart;
-            this.delayBox.Value = (decimal)this.config.InjectDelaySeconds;
         }
 
         private void InitializeDeleteShit()
@@ -343,12 +299,79 @@ namespace Dalamud.Updater
         #endregion
         private void FormMain_Load(object sender, EventArgs e)
         {
-            AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
-            AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
-            AutoUpdater.InstalledVersion = GetUpdaterVersion();
-            labelVer.Text = $"v{Assembly.GetExecutingAssembly().GetName().Version}";
-            CheckUpdate();
         }
+
+        private void UpdateFormConfig() {
+            this.checkBoxAutoInject.Checked = this.config.AutoInject;
+            this.checkBoxAutoStart.Checked = this.config.AutoStart;
+            this.delayBox.Value = (decimal)this.config.InjectDelaySeconds;
+            this.checkBoxSafeMode.Checked = this.config.SafeMode;
+        }
+
+        private void UpdateSelf() {
+            AutoUpdater.ApplicationExitEvent += ()=> {
+                this.Text = @"Closing application...";
+                Thread.Sleep(5000);
+                this.Dispose();
+                this.DalamudUpdaterIcon.Dispose();
+                Application.Exit();
+            };
+            //AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
+            AutoUpdater.InstalledVersion = GetUpdaterVersion();
+            AutoUpdater.ShowRemindLaterButton = false;
+            AutoUpdater.ShowSkipButton = false;
+            AutoUpdater.UpdateMode = Mode.Normal;
+            try
+            {
+                AutoUpdater.ParseUpdateInfoEvent += (args) =>
+                {
+#if DEBUG
+                    var json = JsonConvert.DeserializeObject<VersionInfo>(File.ReadAllText(@"D:\Code\ottercorp\version.txt"), new JsonSerializerSettings
+                    {
+                        TypeNameHandling = TypeNameHandling.All,
+                        TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
+                        Formatting = Formatting.Indented,
+                        NullValueHandling = NullValueHandling.Ignore,
+                    });
+#else
+                    var json = JsonConvert.DeserializeObject<VersionInfo>(args.RemoteData);
+#endif
+                    if (json.AssemblyVersion == null || json.ChangeLogUrl == null || json.DownloadUrl == null)
+                    {
+                        throw new Exception($"远程版本配置文件错误:\n {args.RemoteData}");
+                    }
+                    args.UpdateInfo = new UpdateInfoEventArgs
+                    {
+                        CurrentVersion = json.AssemblyVersion,
+                        ChangelogURL = json.ChangeLogUrl,
+                        DownloadURL = json.DownloadUrl,
+                    };
+                    if (json.Config != null && this.config != null)
+                    {
+                        var type = typeof(Config);
+                        foreach (var property in type.GetProperties())
+                        {
+                            var remoteValue = property.GetValue(json.Config,null);
+                            if (remoteValue != null) {
+                                property.SetValue(this.config,remoteValue);
+                                Log.Information($"Change config {property.Name} value: {property.GetValue(this.config)} -> {remoteValue}");
+                            }
+                        }
+                        this.checkBoxSafeMode.Invoke(UpdateFormConfig);
+                    }
+                };
+                //AutoUpdater.ShowUpdateForm();
+                AutoUpdater.Start(UPDATEURL);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "程序启动版本检查失败",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+
         private void FormMain_Disposed(object sender, EventArgs e)
         {
             this.isThreadRunning = false;
@@ -406,30 +429,7 @@ namespace Dalamud.Updater
         {
             Text = @"Closing application...";
             Thread.Sleep(5000);
-            Application.Exit();
-        }
-
-
-        private void AutoUpdaterOnParseUpdateInfoEvent(ParseUpdateInfoEventArgs args)
-        {
-            dynamic json = JsonConvert.DeserializeObject(args.RemoteData);
-            args.UpdateInfo = new UpdateInfoEventArgs
-            {
-                CurrentVersion = json.version,
-                ChangelogURL = json.changelog,
-                DownloadURL = json.url,
-                Mandatory = new Mandatory
-                {
-                    Value = json.mandatory.value,
-                    UpdateMode = json.mandatory.mode,
-                    MinimumVersion = json.mandatory.minVersion
-                },
-                CheckSum = new CheckSum
-                {
-                    Value = json.checksum.value,
-                    HashingAlgorithm = json.checksum.hashingAlgorithm
-                }
-            };
+            退出ToolStripMenuItem_Click(null,null);
         }
 
         private void OnCheckForUpdateEvent(UpdateInfoEventArgs args)
