@@ -37,12 +37,7 @@ namespace Dalamud.Updater
         private bool isThreadRunning = true;
         private bool dotnetDownloadFinished = false;
         private bool desktopDownloadFinished = false;
-        //private string dotnetDownloadPath;
-        //private string desktopDownloadPath;
-        //private DirectoryInfo runtimePath;
-        //private DirectoryInfo[] runtimePaths;
-        //private string RuntimeVersion = "5.0.17";
-        private double injectDelaySeconds = 0;
+        private Config config;
         private DalamudLoadingOverlay dalamudLoadingOverlay;
 
         private readonly DirectoryInfo addonDirectory;
@@ -80,45 +75,6 @@ namespace Dalamud.Updater
         }
 
         #endregion
-
-        public static string GetAppSettings(string key, string def = null)
-        {
-            try
-            {
-                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                var settings = configFile.AppSettings.Settings;
-                var ele = settings[key];
-                if (ele == null) return def;
-                return ele.Value;
-            }
-            catch (ConfigurationErrorsException)
-            {
-                Console.WriteLine("Error reading app settings");
-            }
-            return def;
-        }
-        public static void AddOrUpdateAppSettings(string key, string value)
-        {
-            try
-            {
-                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                var settings = configFile.AppSettings.Settings;
-                if (settings[key] == null)
-                {
-                    settings.Add(key, value);
-                }
-                else
-                {
-                    settings[key].Value = value;
-                }
-                configFile.Save(ConfigurationSaveMode.Modified);
-                ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
-            }
-            catch (ConfigurationErrorsException)
-            {
-                Console.WriteLine("Error writing app settings");
-            }
-        }
 
         private int checkTimes = 0;
 
@@ -180,9 +136,9 @@ namespace Dalamud.Updater
         {
             InitLogging();
             InitializeComponent();
+            InitializeConfig();
             InitializePIDCheck();
             InitializeDeleteShit();
-            InitializeConfig();
             addonDirectory = Directory.GetParent(Assembly.GetExecutingAssembly().Location);
             dalamudLoadingOverlay = new DalamudLoadingOverlay(this);
             dalamudLoadingOverlay.OnProgressBar += setProgressBar;
@@ -194,7 +150,6 @@ namespace Dalamud.Updater
             assetDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher", "dalamudAssets"));
             configDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher"));
             //labelVersion.Text = string.Format("卫月版本 : {0}", getVersion());
-            delayBox.Value = (decimal)this.injectDelaySeconds;
             SetDalamudVersion();
             string[] strArgs = Environment.GetCommandLineArgs();
             if (strArgs.Length >= 2 && strArgs[1].Equals("-startup"))
@@ -293,19 +248,10 @@ namespace Dalamud.Updater
         }
         private void InitializeConfig()
         {
-            if (GetAppSettings("AutoInject", "false") == "true")
-            {
-                this.checkBoxAutoInject.Checked = true;
-            }
-            if (GetAppSettings("AutoStart", "false") == "true")
-            {
-                this.checkBoxAutoStart.Checked = true;
-            }
-            var tempInjectDelaySeconds = GetAppSettings("InjectDelaySeconds", "0");
-            if (tempInjectDelaySeconds != "0")
-            {
-                this.injectDelaySeconds = double.Parse(tempInjectDelaySeconds);
-            }
+            this.config = Config.Load(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "DalamudUpdaterConfig.json"));
+            this.checkBoxAutoInject.Checked = this.config.AutoInject;
+            this.checkBoxAutoStart.Checked = this.config.AutoStart;
+            this.delayBox.Value = (decimal)this.config.InjectDelaySeconds;
         }
 
         private void InitializeDeleteShit()
@@ -373,7 +319,7 @@ namespace Dalamud.Updater
                                         {
                                             //Thread.Sleep((int)(this.injectDelaySeconds * 1000));
                                             var pid = int.Parse(pidStr);
-                                            if (this.Inject(pid, (int)this.injectDelaySeconds * 1000))
+                                            if (this.Inject(pid, (int)(this.config.InjectDelaySeconds * 1000)))
                                             {
                                                 this.DalamudUpdaterIcon.ShowBalloonTip(2000, "帮你注入了", $"帮你注入了进程{pid}，不用谢。", ToolTipIcon.Info);
                                             }
@@ -687,7 +633,7 @@ namespace Dalamud.Updater
             if (string.IsNullOrWhiteSpace(prevDalamudRuntime))
                 environment.Add("DALAMUD_RUNTIME", runtimeDirectory.FullName);
             */
-            WindowsDalamudRunner.Inject(dalamudUpdater.Runner, process.Id, environment, DalamudLoadMethod.DllInject, dalamudStartInfo,this.safeMode);
+            WindowsDalamudRunner.Inject(dalamudUpdater.Runner, process.Id, environment, DalamudLoadMethod.DllInject, dalamudStartInfo, this.safeMode);
             return true;
         }
 
@@ -719,12 +665,12 @@ namespace Dalamud.Updater
             }
 
         }
-        private void SetAutoRun()
+        private void SetAutoRun(bool value)
         {
             string strFilePath = Application.ExecutablePath;
             try
             {
-                SystemHelper.SetAutoRun($"\"{strFilePath}\"" + " -startup", "DalamudAutoInjector", checkBoxAutoStart.Checked);
+                SystemHelper.SetAutoRun($"\"{strFilePath}\"" + " -startup", "DalamudAutoInjector", value);
             }
             catch (Exception ex)
             {
@@ -734,19 +680,21 @@ namespace Dalamud.Updater
 
         private void checkBoxAutoStart_CheckedChanged(object sender, EventArgs e)
         {
-            SetAutoRun();
-            AddOrUpdateAppSettings("AutoStart", checkBoxAutoStart.Checked ? "true" : "false");
+            this.config.AutoStart = checkBoxAutoStart.Checked;
+            SetAutoRun(this.config.AutoStart);
+            this.config.Save();
         }
 
         private void checkBoxAutoInject_CheckedChanged(object sender, EventArgs e)
         {
-            AddOrUpdateAppSettings("AutoInject", checkBoxAutoInject.Checked ? "true" : "false");
+            this.config.AutoInject = checkBoxAutoInject.Checked;
+            this.config.Save();
         }
 
         private void delayBox_ValueChanged(object sender, EventArgs e)
         {
-            this.injectDelaySeconds = (double)delayBox.Value;
-            AddOrUpdateAppSettings("InjectDelaySeconds", this.injectDelaySeconds.ToString());
+            this.config.InjectDelaySeconds = (double)delayBox.Value;
+            this.config.Save();
         }
 
         private void setProgressBar(int v)
@@ -791,7 +739,7 @@ namespace Dalamud.Updater
             }
         }
 
-        private bool safeMode = false;  
+        private bool safeMode = false;
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             this.safeMode = this.checkBoxSafeMode.Checked;
