@@ -8,7 +8,7 @@
     <Company>Bluefissure</Company>
     <Product>Dalamud.Updater</Product>
     <Copyright>Copyright © Bluefissure 2022</Copyright>
-    <AssemblyVersion>1.0.5.0</AssemblyVersion>
+    <AssemblyVersion>1.0.6.0</AssemblyVersion>
     <FileVersion>1.0.4.4</FileVersion>
     <OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
