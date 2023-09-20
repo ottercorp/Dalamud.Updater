@@ -334,7 +334,13 @@ namespace Dalamud.Updater
                         NullValueHandling = NullValueHandling.Ignore,
                     });
 #else
-                    var json = JsonConvert.DeserializeObject<VersionInfo>(args.RemoteData);
+                    var json = JsonConvert.DeserializeObject<VersionInfo>(args.RemoteData, new JsonSerializerSettings
+                    {
+                        TypeNameHandling = TypeNameHandling.All,
+                        TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
+                        Formatting = Formatting.Indented,
+                        NullValueHandling = NullValueHandling.Ignore,
+                    });
 #endif
                     if (json.AssemblyVersion == null || json.ChangeLogUrl == null || json.DownloadUrl == null)
                     {
