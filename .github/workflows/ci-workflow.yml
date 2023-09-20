@@ -31,12 +31,19 @@ jobs:
         run: |
           cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\"
            .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dalamud.Updater.sln /t:Build /p:Configuration=Release
+
+      - name: Create package
+        shell: pwsh
+        run: |
+          Write-Host "Create Zip package"
+          Compress-Archive -Force Dalamud.Updater\bin\Release\net48\Dalamud.Updater.exe .\release.zip  # Recreate the release zip
+    
       - name: Create Release
         uses: softprops/action-gh-release@91409e712cf565ce9eff10c87a8d1b11b81757ae
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: Dalamud.Updater\bin\Release\net48\**
+          files: .\release.zip
           name: Release ${{ github.ref }}
           prerelease: true
 
