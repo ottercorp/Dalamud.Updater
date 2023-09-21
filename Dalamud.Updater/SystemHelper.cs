@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Security;
 using Dalamud.Updater.Properties;
 using Microsoft.Win32;
 
@@ -73,5 +74,12 @@ namespace Dalamud.Updater
                 throw new Exception(ex.Message, ex);
             }
         }
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr OpenProcess(uint dwDesiredAccess, bool bInheritHandle, int processId);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport("kernel32.dll")]
+        public static extern int CloseHandle(IntPtr hObject);
     }
 }

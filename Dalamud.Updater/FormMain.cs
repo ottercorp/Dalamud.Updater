@@ -255,9 +255,16 @@ namespace Dalamud.Updater
                 {
                     try
                     {
-                        var newPidList = Process.GetProcessesByName("ffxiv_dx11").Where(process =>
+                        //var newPidList = Process.GetProcessesByName("ffxiv_dx11").Where(process =>
+                        //{
+                        //    return !process.MainWindowTitle.Contains("FINAL FANTASY XIV");
+                        //}).ToList().ConvertAll(process => process.Id.ToString()).ToArray();
+                        //为什么我开了FF检测不到啊.jpg
+                        var newPidList = Process.GetProcesses().Where(process =>
                         {
-                            return !process.MainWindowTitle.Contains("FINAL FANTASY XIV");
+                            var isFfxivProcess = process.ProcessName == "ffxiv_dx11" || process.ProcessName == "ffxiv";
+                            var isSdoClient = !process.MainWindowTitle.Contains("FINAL FANTASY XIV");
+                            return isFfxivProcess && isSdoClient;
                         }).ToList().ConvertAll(process => process.Id.ToString()).ToArray();
                         var newHash = String.Join(", ", newPidList).GetHashCode();
                         var oldPidList = this.comboBoxFFXIV.Items.Cast<Object>().Select(item => item.ToString()).ToArray();
@@ -279,6 +286,12 @@ namespace Dalamud.Updater
                                         {
                                             //Thread.Sleep((int)(this.injectDelaySeconds * 1000));
                                             var pid = int.Parse(pidStr);
+                                            if (Process.GetProcessById(pid).ProcessName != "ffxiv_dx11")
+                                            {
+                                                this.DalamudUpdaterIcon.ShowBalloonTip(2000, "找不到游戏", $"进程{pid}不是dx11版FF。", ToolTipIcon.Warning);
+                                                Log.Information("{pid} is not dx11", pid);
+                                                continue;
+                                            }
                                             if (this.Inject(pid, (int)(this.config.InjectDelaySeconds * 1000)))
                                             {
                                                 this.DalamudUpdaterIcon.ShowBalloonTip(2000, "帮你注入了", $"帮你注入了进程{pid}，不用谢。", ToolTipIcon.Info);
@@ -344,13 +357,13 @@ namespace Dalamud.Updater
 
                         });
 #else
-                    var json = JsonConvert.DeserializeObject<VersionInfo>(args.RemoteData, new JsonSerializerSettings
-                    {
-                        TypeNameHandling = TypeNameHandling.All,
-                        TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
-                        Formatting = Formatting.Indented,
-                        NullValueHandling = NullValueHandling.Ignore,
-                    });
+                        var json = JsonConvert.DeserializeObject<VersionInfo>(args.RemoteData, new JsonSerializerSettings
+                        {
+                            TypeNameHandling = TypeNameHandling.All,
+                            TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
+                            Formatting = Formatting.Indented,
+                            NullValueHandling = NullValueHandling.Ignore,
+                        });
 #endif
                         if (json.Version == null || json.DownloadUrl == null)
                         {
@@ -547,9 +560,46 @@ namespace Dalamud.Updater
             }
         }
 
+        private bool IsZombieProcess(int pid)
+        {
+            try
+            {
+                var process = Process.GetProcessById(pid);
+                var mainModule = process.MainModule;
+                var handle = SystemHelper.OpenProcess(0x001F0FFF, true, process.Id);
+                if (handle == IntPtr.Zero)
+                    throw new Exception("ERROR: OpenProcess()");
+                SystemHelper.CloseHandle(handle);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("""
+                    无法访问/打开进程
+                    1.请检查安全软件，将Dalamud程序以及相关目录加入白名单
+                    2.打开任务管理器，检查是否存在未完全退出且无响应的FFXIV进程,并尝试结束
+                    3.尝试重启电脑
+
+                    """ + ex.Message, windowsTitle, MessageBoxButtons.YesNo);
+                return true;
+            }
+            return false;
+        }
+
         private bool Inject(int pid, int injectDelay = 0)
         {
             var process = Process.GetProcessById(pid);
+            if (process.ProcessName != "ffxiv_dx11")
+            {
+                Log.Error("{pid} is not dx11", pid);
+                if (MessageBox.Show("此进程并非dx11版FFXIV,无法使用Dalamud。\n解决方法:\n点击确定使用浏览器查看 https://www.yuque.com/ffcafe/act/dx11", windowsTitle, MessageBoxButtons.YesNo) != DialogResult.Yes)
+                {
+                    Process.Start("https://www.yuque.com/ffcafe/act/dx11");
+                    return false;
+                }
+            }
+            if (IsZombieProcess(pid)) {
+                return false;
+            }
             if (isInjected(process))
             {
                 return false;
