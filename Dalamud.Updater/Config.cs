@@ -11,12 +11,12 @@ using Serilog;
 
 namespace Dalamud.Updater
 {
-    public sealed class Config
+    public class Config
     {
-        public bool AutoStart { get; set; }
-        public bool AutoInject { get; set; }
-        public double InjectDelaySeconds { get; set; }
-        public bool SafeMode { get; set; }
+        public bool? AutoInject { get; set; } = null;
+        public bool? AutoStart { get; set; } = null;
+        public double? InjectDelaySeconds { get; set; } = null;
+        public bool? SafeMode { get; set; } = null; 
 
         private static readonly JsonSerializerSettings SerializerSettings = new()
         {

@@ -11,7 +11,7 @@ namespace Dalamud.Updater
     {
         public string Version;
         public string DownloadUrl;
-        public string ChangeLogUrl;
+        public string ChangeLog;
         public Config Config;
     }
 }

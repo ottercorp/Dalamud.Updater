@@ -20,6 +20,14 @@ namespace Dalamud.Updater
     public partial class FormMain : Form
     {
         private const string UPDATEURL = "https://aonyx.ffxiv.wang/Updater/Release/VersionInfo";
+        private const string OTTERHOME = """
+            如需帮助或者反馈,请前往:
+            https://file.bluefissure.com/FFXIV/Dalamud
+            https://github.com/ottercorp/Dalamud.Updater
+            https://aonyx.ffxiv.wang/
+            QQ频道:https://pd.qq.com/s/9ehyfcha3
+            QQ频道:https://pd.ottercorp.net
+            """;
 
         // private List<string> pidList = new List<string>();
         private bool firstHideHint = true;
@@ -297,15 +305,18 @@ namespace Dalamud.Updater
         {
         }
 
-        private void UpdateFormConfig() {
-            this.checkBoxAutoInject.Checked = this.config.AutoInject;
-            this.checkBoxAutoStart.Checked = this.config.AutoStart;
+        private void UpdateFormConfig()
+        {
+            this.checkBoxAutoInject.Checked = this.config.AutoInject.Value;
+            this.checkBoxAutoStart.Checked = this.config.AutoStart.Value;
             this.delayBox.Value = (decimal)this.config.InjectDelaySeconds;
-            this.checkBoxSafeMode.Checked = this.config.SafeMode;
+            this.checkBoxSafeMode.Checked = this.config.SafeMode.Value;
         }
 
-        private void UpdateSelf() {
-            AutoUpdater.ApplicationExitEvent += ()=> {
+        private void UpdateSelf()
+        {
+            AutoUpdater.ApplicationExitEvent += () =>
+            {
                 this.Text = @"Closing application...";
                 Thread.Sleep(5000);
                 this.Dispose();
@@ -321,15 +332,17 @@ namespace Dalamud.Updater
             {
                 AutoUpdater.ParseUpdateInfoEvent += (args) =>
                 {
-#if DEBUG
-                    var json = JsonConvert.DeserializeObject<VersionInfo>(File.ReadAllText(@"D:\Code\ottercorp\version.txt"), new JsonSerializerSettings
+                    try
                     {
-                        TypeNameHandling = TypeNameHandling.All,
-                        TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
-                        Formatting = Formatting.Indented,
-                        NullValueHandling = NullValueHandling.Ignore,
-                        
-                    });
+#if DEBUG
+                        var json = JsonConvert.DeserializeObject<VersionInfo>(File.ReadAllText(@"D:\Code\ottercorp\version.txt"), new JsonSerializerSettings
+                        {
+                            TypeNameHandling = TypeNameHandling.All,
+                            TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
+                            Formatting = Formatting.Indented,
+                            NullValueHandling = NullValueHandling.Ignore,
+
+                        });
 #else
                     var json = JsonConvert.DeserializeObject<VersionInfo>(args.RemoteData, new JsonSerializerSettings
                     {
@@ -339,28 +352,39 @@ namespace Dalamud.Updater
                         NullValueHandling = NullValueHandling.Ignore,
                     });
 #endif
-                    if (json.Version == null || json.ChangeLogUrl == null || json.DownloadUrl == null)
-                    {
-                        throw new Exception($"远程版本配置文件错误:\n {args.RemoteData}");
-                    }
-                    args.UpdateInfo = new UpdateInfoEventArgs
-                    {
-                        CurrentVersion = json.Version,
-                        ChangelogURL = json.ChangeLogUrl,
-                        DownloadURL = json.DownloadUrl,
-                    };
-                    if (json.Config != null && this.config != null)
-                    {
-                        var type = typeof(Config);
-                        foreach (var property in type.GetProperties())
+                        if (json.Version == null || json.DownloadUrl == null)
                         {
-                            var remoteValue = property.GetValue(json.Config,null);
-                            if (remoteValue != null) {
-                                property.SetValue(this.config,remoteValue);
-                                Log.Information($"Change config {property.Name} value: {property.GetValue(this.config)} -> {remoteValue}");
-                            }
+                            throw new Exception($"远程版本配置文件错误:\n {args.RemoteData}");
                         }
-                        this.checkBoxSafeMode.Invoke(UpdateFormConfig);
+
+                        json.ChangeLog ??= "https://bbs.tggfl.com/topic/32/dalamud-%E5%8D%AB%E6%9C%88%E6%A1%86%E6%9E%B6";
+                        args.UpdateInfo = new UpdateInfoEventArgs
+                        {
+                            CurrentVersion = json.Version,
+                            ChangelogURL = json.ChangeLog,
+                            DownloadURL = json.DownloadUrl,
+                        };
+                        if (json.Config != null && this.config != null)
+                        {
+                            var type = typeof(Config);
+                            foreach (var property in type.GetProperties())
+                            {
+                                //if (property.Name.Equals())
+                                var remoteValue = property.GetValue(json.Config, null);
+                                if (remoteValue != null)
+                                {
+                                    property.SetValue(this.config, remoteValue);
+                                    Log.Information($"Change config {property.Name} value: {property.GetValue(this.config)} -> {remoteValue}");
+                                }
+                            }
+                            this.checkBoxSafeMode.Invoke(UpdateFormConfig);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"{ex.Message}\n{OTTERHOME}", "程序启动版本检查失败",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
                     }
                 };
                 //AutoUpdater.ShowUpdateForm();
@@ -368,7 +392,7 @@ namespace Dalamud.Updater
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "程序启动版本检查失败",
+                MessageBox.Show($"{ex.Message}\n{OTTERHOME}", "程序启动版本检查失败",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
@@ -600,7 +624,7 @@ namespace Dalamud.Updater
         private void checkBoxAutoStart_CheckedChanged(object sender, EventArgs e)
         {
             this.config.AutoStart = checkBoxAutoStart.Checked;
-            SetAutoRun(this.config.AutoStart);
+            SetAutoRun(this.config.AutoStart.Value);
             this.config.Save();
         }
 
