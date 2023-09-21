@@ -1,29 +1,19 @@
 using AutoUpdaterDotNET;
-using Dalamud.Updater.Properties;
 using Newtonsoft.Json;
+using Serilog;
+using Serilog.Core;
+using Serilog.Events;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Text.RegularExpressions;
-using System.IO.Compression;
-using System.Configuration;
-using Newtonsoft.Json.Linq;
-using System.Security.Principal;
+using System.Threading;
+using System.Windows.Forms;
 using XIVLauncher.Common.Dalamud;
-using Serilog.Core;
-using Serilog;
-using Serilog.Events;
 
 namespace Dalamud.Updater
 {
@@ -212,6 +202,12 @@ namespace Dalamud.Updater
 
         private void InitializeDeleteShit()
         {
+            var shitConfig = Path.Combine(Directory.GetCurrentDirectory(), "Dalamud.Updater.exe.config");
+            if (File.Exists(shitConfig))
+            {
+                File.Delete(shitConfig);
+            }
+
             var shitInjector = Path.Combine(Directory.GetCurrentDirectory(), "Dalamud.Injector.exe");
             if (File.Exists(shitInjector))
             {
@@ -332,6 +328,7 @@ namespace Dalamud.Updater
                         TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
                         Formatting = Formatting.Indented,
                         NullValueHandling = NullValueHandling.Ignore,
+                        
                     });
 #else
                     var json = JsonConvert.DeserializeObject<VersionInfo>(args.RemoteData, new JsonSerializerSettings
@@ -342,13 +339,13 @@ namespace Dalamud.Updater
                         NullValueHandling = NullValueHandling.Ignore,
                     });
 #endif
-                    if (json.AssemblyVersion == null || json.ChangeLogUrl == null || json.DownloadUrl == null)
+                    if (json.Version == null || json.ChangeLogUrl == null || json.DownloadUrl == null)
                     {
                         throw new Exception($"远程版本配置文件错误:\n {args.RemoteData}");
                     }
                     args.UpdateInfo = new UpdateInfoEventArgs
                     {
-                        CurrentVersion = json.AssemblyVersion,
+                        CurrentVersion = json.Version,
                         ChangelogURL = json.ChangeLogUrl,
                         DownloadURL = json.DownloadUrl,
                     };
@@ -429,90 +426,6 @@ namespace Dalamud.Updater
             //this.Close();
             this.DalamudUpdaterIcon.Dispose();
             Application.Exit();
-        }
-
-        private void AutoUpdater_ApplicationExitEvent()
-        {
-            Text = @"Closing application...";
-            Thread.Sleep(5000);
-            退出ToolStripMenuItem_Click(null,null);
-        }
-
-        private void OnCheckForUpdateEvent(UpdateInfoEventArgs args)
-        {
-            if (args.Error == null)
-            {
-                if (args.IsUpdateAvailable)
-                {
-                    DialogResult dialogResult;
-                    if (args.Mandatory.Value)
-                    {
-                        dialogResult =
-                            MessageBox.Show(
-                                $@"卫月更新器 {args.CurrentVersion} 版本可用。当前版本为 {args.InstalledVersion}。这是一个强制更新，请点击确认来更新卫月更新器。",
-                                @"更新可用",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Information);
-                    }
-                    else
-                    {
-                        dialogResult =
-                            MessageBox.Show(
-                                $@"卫月更新器 {args.CurrentVersion} 版本可用。当前版本为 {args.InstalledVersion}。您想要开始更新吗？", @"更新可用",
-                                MessageBoxButtons.YesNo,
-                                MessageBoxIcon.Information);
-                    }
-
-
-                    if (dialogResult.Equals(DialogResult.Yes) || dialogResult.Equals(DialogResult.OK))
-                    {
-                        try
-                        {
-                            //You can use Download Update dialog used by AutoUpdater.NET to download the update.
-
-                            if (AutoUpdater.DownloadUpdate(args))
-                            {
-                                this.Dispose();
-                                this.DalamudUpdaterIcon.Dispose();
-                                Application.Exit();
-                            }
-                        }
-                        catch (Exception exception)
-                        {
-                            MessageBox.Show(exception.Message, exception.GetType().ToString(), MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
-                        }
-                    }
-                }
-                else
-                {
-                    Log.Information("[Updater] 没有可用的卫月更新器更新，请稍后查看。");
-                    /*
-                    MessageBox.Show(@"没有可用的更新器更新，请稍后查看。", @"更新不可用",
-                                   MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    */
-                }
-            }
-            else
-            {
-                if (args.Error is WebException)
-                {
-                    MessageBox.Show(
-                        @"访问更新服务器出错，请检查您的互联网连接后重试。",
-                        @"更新检查失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    MessageBox.Show(args.Error.Message,
-                        args.Error.GetType().ToString(), MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
-                }
-            }
-        }
-
-        private void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
-        {
-            OnCheckForUpdateEvent(args);
         }
 
         private void ButtonCheckForUpdate_Click(object sender, EventArgs e)
