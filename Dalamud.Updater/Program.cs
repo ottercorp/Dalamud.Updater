@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -26,16 +27,21 @@ namespace Dalamud.Updater
                 var exeName = Process.GetCurrentProcess().MainModule.FileName;
                 ProcessStartInfo startInfo = new ProcessStartInfo(exeName);
                 startInfo.Verb = "runas";
-                if (strArgs.Length >= 2 && strArgs[1].Equals("-startup"))
-                {
-                    startInfo.Arguments = "-startup";
-                }
+                var args = strArgs.Skip(1).ToList();
+                //if (strArgs.Length >= 2 && strArgs[1].Equals("-startup"))
+                //{
+                //    startInfo.Arguments = "-startup";
+                //}
+                args.Add("-no_mutex");
+                startInfo.Arguments = string.Join(" ", args);
                 startInfo.WorkingDirectory = Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName;
                 Process.Start(startInfo);
+                //Thread.Sleep(10000);
                 Application.Exit();
                 return;
             }
-            if (ProcessMutexInstance()) {
+            if (!strArgs.Contains("-no_mutex") && ProcessMutexInstance()) {
+                //MessageBox.Show("Exists!");
                 Application.Exit();
                 return;
             }
