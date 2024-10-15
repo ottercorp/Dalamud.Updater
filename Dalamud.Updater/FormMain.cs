@@ -109,16 +109,17 @@ namespace Dalamud.Updater
             InitializeComponent();
             InitializePIDCheck();
             InitializeDeleteShit();
-            addonDirectory = Directory.GetParent(Assembly.GetExecutingAssembly().Location);
             dalamudLoadingOverlay = new DalamudLoadingOverlay(this);
             dalamudLoadingOverlay.OnProgressBar += setProgressBar;
             dalamudLoadingOverlay.OnSetVisible += setVisible;
             dalamudLoadingOverlay.OnStatusLabel += setStatus;
-            addonDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher", "addon"));
-            runtimeDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher", "runtime"));
-            xivlauncherDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher"));
-            assetDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher", "dalamudAssets"));
-            configDirectory = new DirectoryInfo(Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName, "XIVLauncher"));
+
+            CheckPath();
+
+            addonDirectory = new DirectoryInfo(Path.Combine(RoamingPath, "addon"));
+            runtimeDirectory = new DirectoryInfo(Path.Combine(RoamingPath, "runtime"));
+            assetDirectory = new DirectoryInfo(Path.Combine(RoamingPath, "dalamudAssets"));
+            configDirectory = new DirectoryInfo(Path.Combine(RoamingPath));
             //labelVersion.Text = string.Format("卫月版本 : {0}", getVersion());
             string[] strArgs = Environment.GetCommandLineArgs();
             if (strArgs.Length >= 2 && strArgs[1].Equals("-startup"))
@@ -501,19 +502,59 @@ namespace Dalamud.Updater
             Process.Start("https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&inviteCode=CZtWN&from=181074&biz=ka&shareSource=5");
         }
 
+        public readonly string RoamingPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "XIVLauncherCN");
+
+        public void CheckPath()
+        {
+            if (!Directory.Exists(Path.Combine(RoamingPath, "addon")))
+            {
+                Log.Warning($"Moving Roaming to AppData");
+                var oldRoamingPath = Path.Combine(new DirectoryInfo(Environment.CurrentDirectory).Parent!.FullName, "Roaming");
+                if (!Directory.Exists(oldRoamingPath)) return;
+
+                Directory.CreateDirectory(RoamingPath);
+                Copy(oldRoamingPath, RoamingPath);
+                //Directory.Delete(oldRoamingPath, true);
+            }
+        }
+
+        private static readonly List<string> Needed = ["addon", "backups", "dalamudAssets", /*"devPlugins",*/ "installedPlugins", "pluginConfigs", "runtime"];
+
+        private static void Copy(string sourcePath, string destPath)
+        {
+            foreach (var file in Directory.GetFiles(sourcePath))
+            {
+                var dest = Path.Combine(destPath, Path.GetFileName(file));
+                File.Copy(file, dest, false);
+            }
+
+            foreach (var directory in Directory.GetDirectories(sourcePath))
+            {
+                if (sourcePath == Path.Combine(new DirectoryInfo(Environment.CurrentDirectory).Parent!.FullName, "Roaming"))
+                {
+                    if (!Needed.Contains(Path.GetFileName(directory)))
+                        continue;
+                }
+
+                var destDir = Path.Combine(destPath, Path.GetFileName(directory));
+                if (!Directory.Exists(destDir)) Directory.CreateDirectory(destDir);
+                Copy(directory, destDir);
+            }
+        }
+
+
         private DalamudStartInfo GeneratingDalamudStartInfo(Process process, string dalamudPath, int injectDelay)
         {
             var ffxivDir = Path.GetDirectoryName(process.MainModule.FileName);
-            var appDataDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            var xivlauncherDir = xivlauncherDirectory.FullName;
+            //appDataDir
 
             var gameVerStr = File.ReadAllText(Path.Combine(ffxivDir, "ffxivgame.ver"));
 
             var startInfo = new DalamudStartInfo
             {
-                ConfigurationPath = Path.Combine(xivlauncherDir, "dalamudConfig.json"),
-                PluginDirectory = Path.Combine(xivlauncherDir, "installedPlugins"),
-                DefaultPluginDirectory = Path.Combine(xivlauncherDir, "devPlugins"),
+                ConfigurationPath = Path.Combine(RoamingPath, "dalamudConfig.json"),
+                PluginDirectory = Path.Combine(RoamingPath, "installedPlugins"),
+                DefaultPluginDirectory = Path.Combine(RoamingPath, "devPlugins"),
                 RuntimeDirectory = runtimeDirectory.FullName,
                 AssetDirectory = this.dalamudUpdater.AssetDirectory.FullName,
                 GameVersion = gameVerStr,
