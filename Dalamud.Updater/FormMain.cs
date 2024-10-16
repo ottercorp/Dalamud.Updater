@@ -114,6 +114,7 @@ namespace Dalamud.Updater
             dalamudLoadingOverlay.OnSetVisible += setVisible;
             dalamudLoadingOverlay.OnStatusLabel += setStatus;
 
+            if (!Directory.Exists(RoamingPath)) Directory.CreateDirectory(RoamingPath);
             DeleteLink();
             CheckPath();
 
