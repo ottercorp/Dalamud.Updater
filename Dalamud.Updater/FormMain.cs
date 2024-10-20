@@ -526,7 +526,7 @@ namespace Dalamud.Updater
             if (!Directory.Exists(Path.Combine(RoamingPath, "addon")))
             {
                 Log.Warning($"Moving Roaming to AppData");
-                var oldRoamingPath = Path.Combine(new DirectoryInfo(Environment.CurrentDirectory).Parent!.FullName, "Roaming");
+                var oldRoamingPath = Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location)!.FullName, "XIVLauncher");
                 if (!Directory.Exists(oldRoamingPath)) return;
 
                 Directory.CreateDirectory(RoamingPath);
@@ -542,12 +542,12 @@ namespace Dalamud.Updater
             foreach (var file in Directory.GetFiles(sourcePath))
             {
                 var dest = Path.Combine(destPath, Path.GetFileName(file));
-                File.Copy(file, dest, false);
+                File.Copy(file, dest, true);
             }
 
             foreach (var directory in Directory.GetDirectories(sourcePath))
             {
-                if (sourcePath == Path.Combine(new DirectoryInfo(Environment.CurrentDirectory).Parent!.FullName, "Roaming"))
+                if (sourcePath == Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location)!.FullName, "XIVLauncher"))
                 {
                     if (!Needed.Contains(Path.GetFileName(directory)))
                         continue;
