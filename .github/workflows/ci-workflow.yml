@@ -43,7 +43,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: .\release.zip
+          files: ./release.zip
           name: Release ${{ github.ref }}
           prerelease: true
 
