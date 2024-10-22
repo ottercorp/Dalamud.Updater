@@ -8,8 +8,8 @@
     <Company>Bluefissure</Company>
     <Product>Dalamud.Updater</Product>
     <Copyright>Copyright © Bluefissure 2022</Copyright>
-    <AssemblyVersion>1.0.6.3</AssemblyVersion>
-    <FileVersion>1.0.6.3</FileVersion>
+    <AssemblyVersion>1.0.7.0</AssemblyVersion>
+    <FileVersion>1.0.7.0</FileVersion>
     <OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
