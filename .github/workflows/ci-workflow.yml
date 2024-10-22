@@ -39,7 +39,7 @@ jobs:
           Compress-Archive -Force Dalamud.Updater\bin\Release\net48\Dalamud.Updater.exe .\release.zip  # Recreate the release zip
     
       - name: Create Release
-        uses: softprops/action-gh-release@91409e712cf565ce9eff10c87a8d1b11b81757ae
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
