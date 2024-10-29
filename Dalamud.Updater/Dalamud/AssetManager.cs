@@ -148,10 +148,6 @@ namespace XIVLauncher.Common.Dalamud
                         var request = await client.GetAsync(entry.Url).ConfigureAwait(true);
                         request.EnsureSuccessStatusCode();
                         File.WriteAllBytes(newFilePath, await request.Content.ReadAsByteArrayAsync().ConfigureAwait(true));
-                        if (entry.FileName == "UIRes/NotoSansCJKsc-Medium.otf")
-                        {
-                            throw new Exception("1111");
-                        }
                         isRefreshNeeded = true;
                         continue;
                     }
