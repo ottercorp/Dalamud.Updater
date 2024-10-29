@@ -93,6 +93,25 @@ namespace XIVLauncher.Common.Dalamud
                 }
             }
 
+            var fontUrls = new List<string>()
+            {
+                "https://mirrors.aliyun.com/CTAN/fonts/notocjksc/NotoSansCJKsc-Medium.otf",
+                "http://mirrors.pku.edu.cn/ctan/fonts/notocjksc/NotoSansCJKsc-Medium.otf",
+                "https://mirror.bjtu.edu.cn/CTAN/fonts/notocjksc/NotoSansCJKsc-Medium.otf",
+                "https://mirrors.bfsu.edu.cn/CTAN/fonts/notocjksc/NotoSansCJKsc-Medium.otf",
+                "https://mirrors.jlu.edu.cn/CTAN/fonts/notocjksc/NotoSansCJKsc-Medium.otf",
+                "https://mirrors.sustech.edu.cn/CTAN/fonts/notocjksc/NotoSansCJKsc-Medium.otf",
+                "https://mirrors.nju.edu.cn/CTAN/fonts/notocjksc/NotoSansCJKsc-Medium.otf",
+                "https://mirror.nyist.edu.cn/CTAN/fonts/notocjksc/NotoSansCJKsc-Medium.otf",
+                "https://mirrors.tuna.tsinghua.edu.cn/CTAN/fonts/notocjksc/NotoSansCJKsc-Medium.otf",
+                "https://mirrors.cloud.tencent.com/CTAN/fonts/notocjksc/NotoSansCJKsc-Medium.otf",
+                "https://mirrors.ustc.edu.cn/CTAN/fonts/notocjksc/NotoSansCJKsc-Medium.otf",
+                "https://mirrors.huaweicloud.com/CTAN/fonts/notocjksc/NotoSansCJKsc-Medium.otf",
+                "https://mirror.lzu.edu.cn/CTAN/fonts/notocjksc/NotoSansCJKsc-Medium.otf",
+                "https://mirrors.zju.edu.cn/CTAN/fonts/notocjksc/NotoSansCJKsc-Medium.otf",
+                "https://mirror.iscas.ac.cn/CTAN/fonts/notocjksc/NotoSansCJKsc-Medium.otf",
+            };
+
             foreach (var entry in assetFileDownloadList)
             {
                 var oldFilePath = Path.Combine(devDir.FullName, entry.FileName);
@@ -120,20 +139,32 @@ namespace XIVLauncher.Common.Dalamud
                 {
                     Log.Error(ex, "[DASSET] Could not copy from old asset: {0}", entry.FileName);
                 }
+                var maxRetryNumber = 5;
+                while (maxRetryNumber > 0) { 
+                    try
+                    {
+                        Log.Information("[DASSET] Downloading {0} to {1}...", entry.Url, entry.FileName);
 
-                try
-                {
-                    Log.Information("[DASSET] Downloading {0} to {1}...", entry.Url, entry.FileName);
-
-                    var request = await client.GetAsync(entry.Url).ConfigureAwait(true);
-                    request.EnsureSuccessStatusCode();
-                    File.WriteAllBytes(newFilePath, await request.Content.ReadAsByteArrayAsync().ConfigureAwait(true));
-
-                    isRefreshNeeded = true;
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, "[DASSET] Could not download old asset: {0}", entry.FileName);
+                        var request = await client.GetAsync(entry.Url).ConfigureAwait(true);
+                        request.EnsureSuccessStatusCode();
+                        File.WriteAllBytes(newFilePath, await request.Content.ReadAsByteArrayAsync().ConfigureAwait(true));
+                        if (entry.FileName == "UIRes/NotoSansCJKsc-Medium.otf")
+                        {
+                            throw new Exception("1111");
+                        }
+                        isRefreshNeeded = true;
+                        continue;
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "[DASSET] Could not download old asset: {0}", entry.FileName);
+                        if (entry.FileName == "UIRes/NotoSansCJKsc-Medium.otf") {
+                            maxRetryNumber= fontUrls.Count;
+                            entry.Url = fontUrls.First();
+                            fontUrls.RemoveAt(0);
+                        }
+                        maxRetryNumber --;
+                    }
                 }
             }
 
