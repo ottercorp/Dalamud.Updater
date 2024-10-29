@@ -352,7 +352,7 @@ namespace Dalamud.Updater
                 {
                     try
                     {
-#if DEBUG
+#if false
                         var json = JsonConvert.DeserializeObject<VersionInfo>(File.ReadAllText(@"D:\Code\ottercorp\version.txt"), new JsonSerializerSettings
                         {
                             TypeNameHandling = TypeNameHandling.All,
