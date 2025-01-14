@@ -51,22 +51,22 @@ namespace Dalamud.Updater
             this.label1 = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.checkBoxSafeMode = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.checkboxTableLayout = new System.Windows.Forms.TableLayoutPanel();
+            this.delayFlowLayout = new System.Windows.Forms.FlowLayoutPanel();
+            this.versionTableLayout = new System.Windows.Forms.TableLayoutPanel();
+            this.mainTableLayout = new System.Windows.Forms.TableLayoutPanel();
             this.labelVersion = new System.Windows.Forms.Label();
             this.buttonCheckForUpdate = new System.Windows.Forms.Button();
             this.comboBoxFFXIV = new System.Windows.Forms.ComboBox();
-            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.delayTableLayout = new System.Windows.Forms.TableLayoutPanel();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.delayBox)).BeginInit();
             this.statusStrip1.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
-            this.tableLayoutPanel3.SuspendLayout();
-            this.tableLayoutPanel4.SuspendLayout();
+            this.checkboxTableLayout.SuspendLayout();
+            this.delayFlowLayout.SuspendLayout();
+            this.versionTableLayout.SuspendLayout();
+            this.mainTableLayout.SuspendLayout();
+            this.delayTableLayout.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonInject
@@ -238,75 +238,75 @@ namespace Dalamud.Updater
             this.checkBoxSafeMode.UseVisualStyleBackColor = true;
             this.checkBoxSafeMode.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
-            // tableLayoutPanel1
+            // checkboxTableLayout
             // 
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.checkBoxAutoStart, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.checkBoxAutoInject, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.checkBoxSafeMode, 0, 1);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(5, 213);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(5);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(486, 100);
-            this.tableLayoutPanel1.TabIndex = 16;
+            this.checkboxTableLayout.ColumnCount = 2;
+            this.checkboxTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.checkboxTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.checkboxTableLayout.Controls.Add(this.checkBoxAutoStart, 0, 0);
+            this.checkboxTableLayout.Controls.Add(this.checkBoxAutoInject, 1, 0);
+            this.checkboxTableLayout.Controls.Add(this.checkBoxSafeMode, 0, 1);
+            this.checkboxTableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkboxTableLayout.Location = new System.Drawing.Point(5, 213);
+            this.checkboxTableLayout.Margin = new System.Windows.Forms.Padding(5);
+            this.checkboxTableLayout.Name = "checkboxTableLayout";
+            this.checkboxTableLayout.RowCount = 2;
+            this.checkboxTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.checkboxTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.checkboxTableLayout.Size = new System.Drawing.Size(486, 100);
+            this.checkboxTableLayout.TabIndex = 16;
             // 
-            // flowLayoutPanel1
+            // delayFlowLayout
             // 
-            this.flowLayoutPanel1.Controls.Add(this.delayLabel);
-            this.flowLayoutPanel1.Controls.Add(this.delayBox);
-            this.flowLayoutPanel1.Controls.Add(this.second);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 3);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(480, 50);
-            this.flowLayoutPanel1.TabIndex = 17;
+            this.delayFlowLayout.Controls.Add(this.delayLabel);
+            this.delayFlowLayout.Controls.Add(this.delayBox);
+            this.delayFlowLayout.Controls.Add(this.second);
+            this.delayFlowLayout.Dock = System.Windows.Forms.DockStyle.Top;
+            this.delayFlowLayout.Location = new System.Drawing.Point(3, 3);
+            this.delayFlowLayout.Name = "delayFlowLayout";
+            this.delayFlowLayout.Size = new System.Drawing.Size(480, 50);
+            this.delayFlowLayout.TabIndex = 17;
             // 
-            // tableLayoutPanel2
+            // versionTableLayout
             // 
-            this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.Controls.Add(this.labelVer, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.linkLabel1, 1, 0);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 604);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 1;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(490, 52);
-            this.tableLayoutPanel2.TabIndex = 18;
+            this.versionTableLayout.ColumnCount = 2;
+            this.versionTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.versionTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.versionTableLayout.Controls.Add(this.labelVer, 0, 0);
+            this.versionTableLayout.Controls.Add(this.linkLabel1, 1, 0);
+            this.versionTableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.versionTableLayout.Location = new System.Drawing.Point(3, 604);
+            this.versionTableLayout.Name = "versionTableLayout";
+            this.versionTableLayout.RowCount = 1;
+            this.versionTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.versionTableLayout.Size = new System.Drawing.Size(490, 52);
+            this.versionTableLayout.TabIndex = 18;
             // 
-            // tableLayoutPanel3
+            // mainTableLayout
             // 
-            this.tableLayoutPanel3.ColumnCount = 1;
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.Controls.Add(this.labelVersion, 0, 0);
-            this.tableLayoutPanel3.Controls.Add(this.buttonCheckForUpdate, 0, 1);
-            this.tableLayoutPanel3.Controls.Add(this.tableLayoutPanel2, 0, 6);
-            this.tableLayoutPanel3.Controls.Add(this.comboBoxFFXIV, 0, 2);
-            this.tableLayoutPanel3.Controls.Add(this.tableLayoutPanel1, 0, 3);
-            this.tableLayoutPanel3.Controls.Add(this.buttonInject, 0, 5);
-            this.tableLayoutPanel3.Controls.Add(this.tableLayoutPanel4, 0, 4);
-            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(8, 8);
-            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-            this.tableLayoutPanel3.RowCount = 7;
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(496, 659);
-            this.tableLayoutPanel3.TabIndex = 19;
+            this.mainTableLayout.ColumnCount = 1;
+            this.mainTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.mainTableLayout.Controls.Add(this.labelVersion, 0, 0);
+            this.mainTableLayout.Controls.Add(this.buttonCheckForUpdate, 0, 1);
+            this.mainTableLayout.Controls.Add(this.versionTableLayout, 0, 6);
+            this.mainTableLayout.Controls.Add(this.comboBoxFFXIV, 0, 2);
+            this.mainTableLayout.Controls.Add(this.checkboxTableLayout, 0, 3);
+            this.mainTableLayout.Controls.Add(this.buttonInject, 0, 5);
+            this.mainTableLayout.Controls.Add(this.delayTableLayout, 0, 4);
+            this.mainTableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mainTableLayout.Location = new System.Drawing.Point(8, 8);
+            this.mainTableLayout.Name = "mainTableLayout";
+            this.mainTableLayout.RowCount = 7;
+            this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.mainTableLayout.Size = new System.Drawing.Size(496, 659);
+            this.mainTableLayout.TabIndex = 19;
             // 
             // labelVersion
             // 
@@ -346,28 +346,28 @@ namespace Dalamud.Updater
             this.comboBoxFFXIV.TabIndex = 2;
             this.comboBoxFFXIV.Click += new System.EventHandler(this.comboBoxFFXIV_Clicked);
             // 
-            // tableLayoutPanel4
+            // delayTableLayout
             // 
-            this.tableLayoutPanel4.ColumnCount = 1;
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.Controls.Add(this.label1, 0, 1);
-            this.tableLayoutPanel4.Controls.Add(this.flowLayoutPanel1, 0, 0);
-            this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel4.Location = new System.Drawing.Point(5, 323);
-            this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(5);
-            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
-            this.tableLayoutPanel4.RowCount = 2;
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(486, 100);
-            this.tableLayoutPanel4.TabIndex = 19;
+            this.delayTableLayout.ColumnCount = 1;
+            this.delayTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.delayTableLayout.Controls.Add(this.label1, 0, 1);
+            this.delayTableLayout.Controls.Add(this.delayFlowLayout, 0, 0);
+            this.delayTableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.delayTableLayout.Location = new System.Drawing.Point(5, 323);
+            this.delayTableLayout.Margin = new System.Windows.Forms.Padding(5);
+            this.delayTableLayout.Name = "delayTableLayout";
+            this.delayTableLayout.RowCount = 2;
+            this.delayTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.delayTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.delayTableLayout.Size = new System.Drawing.Size(486, 100);
+            this.delayTableLayout.TabIndex = 19;
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(15F, 37F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(512, 721);
-            this.Controls.Add(this.tableLayoutPanel3);
+            this.Controls.Add(this.mainTableLayout);
             this.Controls.Add(this.statusStrip1);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -384,16 +384,16 @@ namespace Dalamud.Updater
             ((System.ComponentModel.ISupportInitialize)(this.delayBox)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
-            this.tableLayoutPanel3.ResumeLayout(false);
-            this.tableLayoutPanel3.PerformLayout();
-            this.tableLayoutPanel4.ResumeLayout(false);
-            this.tableLayoutPanel4.PerformLayout();
+            this.checkboxTableLayout.ResumeLayout(false);
+            this.checkboxTableLayout.PerformLayout();
+            this.delayFlowLayout.ResumeLayout(false);
+            this.delayFlowLayout.PerformLayout();
+            this.versionTableLayout.ResumeLayout(false);
+            this.versionTableLayout.PerformLayout();
+            this.mainTableLayout.ResumeLayout(false);
+            this.mainTableLayout.PerformLayout();
+            this.delayTableLayout.ResumeLayout(false);
+            this.delayTableLayout.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -418,14 +418,14 @@ namespace Dalamud.Updater
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.CheckBox checkBoxSafeMode;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private System.Windows.Forms.TableLayoutPanel checkboxTableLayout;
+        private System.Windows.Forms.FlowLayoutPanel delayFlowLayout;
+        private System.Windows.Forms.TableLayoutPanel versionTableLayout;
+        private System.Windows.Forms.TableLayoutPanel mainTableLayout;
         private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.Button buttonCheckForUpdate;
         private System.Windows.Forms.ComboBox comboBoxFFXIV;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
+        private System.Windows.Forms.TableLayoutPanel delayTableLayout;
     }
 }
 
