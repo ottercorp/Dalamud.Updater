@@ -48,9 +48,12 @@ namespace Dalamud.Updater
         public string windowsTitle = "獭纪委 v" + Assembly.GetExecutingAssembly().GetName().Version;
 
         private int checkTimes = 0;
+        private int injectTimes = 0;
+        private bool isCheckingUpdate = false;
 
         private void CheckUpdate()
         {
+            isCheckingUpdate = true;
             checkTimes++;
             if (checkTimes == 8)
             {
@@ -169,6 +172,8 @@ namespace Dalamud.Updater
                     setStatus("检查更新中...");
                     break;
             }
+
+            this.isCheckingUpdate = false;
         }
 
         public void SetDalamudVersion()
@@ -647,6 +652,7 @@ namespace Dalamud.Updater
 
         private bool Inject(int pid, int injectDelay = 0)
         {
+            injectTimes = 0;
             var process = Process.GetProcessById(pid);
             if (process.ProcessName != "ffxiv_dx11")
             {
@@ -692,6 +698,27 @@ namespace Dalamud.Updater
 
         private void ButtonInject_Click(object sender, EventArgs e)
         {
+            if (this.isCheckingUpdate) {
+                injectTimes++;
+                if (injectTimes == 3)
+                {
+                    MessageBox.Show("麻烦耐心等待更新完成 ^_^", "正在更新", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if (checkTimes == 4)
+                {
+                    MessageBox.Show("都说了“麻烦”“耐心”“等待” ^_^##", "正在更新", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if (checkTimes > 5)
+                {
+                    MessageBox.Show("憋点啦！ -_-##", "正在更新", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    MessageBox.Show("请等更新完成之后再注入", "正在更新", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                return;
+            }
+
             if (this.comboBoxFFXIV.SelectedItem != null
                 && this.comboBoxFFXIV.SelectedItem.ToString().Length > 0)
             {
