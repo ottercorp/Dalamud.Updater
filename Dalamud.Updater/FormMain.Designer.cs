@@ -52,7 +52,6 @@ namespace Dalamud.Updater
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.checkBoxSafeMode = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.checkBoxOnlyCNClient = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
@@ -247,7 +246,6 @@ namespace Dalamud.Updater
             this.tableLayoutPanel1.Controls.Add(this.checkBoxAutoStart, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.checkBoxAutoInject, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.checkBoxSafeMode, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.checkBoxOnlyCNClient, 1, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(5, 213);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(5);
@@ -257,17 +255,6 @@ namespace Dalamud.Updater
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(486, 100);
             this.tableLayoutPanel1.TabIndex = 16;
-            // 
-            // checkBoxOnlyCNClient
-            // 
-            this.checkBoxOnlyCNClient.AutoSize = true;
-            this.checkBoxOnlyCNClient.Location = new System.Drawing.Point(246, 53);
-            this.checkBoxOnlyCNClient.Name = "checkBoxOnlyCNClient";
-            this.checkBoxOnlyCNClient.Size = new System.Drawing.Size(189, 41);
-            this.checkBoxOnlyCNClient.TabIndex = 16;
-            this.checkBoxOnlyCNClient.Text = "仅检测国服";
-            this.toolTip1.SetToolTip(this.checkBoxOnlyCNClient, "试验性功能，根据应用名称判断是否为国服，如果无法检测到客户端，请关闭这个选项。");
-            this.checkBoxOnlyCNClient.UseVisualStyleBackColor = true;
             // 
             // flowLayoutPanel1
             // 
@@ -438,7 +425,6 @@ namespace Dalamud.Updater
         private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.Button buttonCheckForUpdate;
         private System.Windows.Forms.ComboBox comboBoxFFXIV;
-        private System.Windows.Forms.CheckBox checkBoxOnlyCNClient;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
     }
 }
