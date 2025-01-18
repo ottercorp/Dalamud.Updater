@@ -152,6 +152,7 @@ namespace Dalamud.Updater
 
         private void DalamudUpdater_OnUpdateEvent(DalamudUpdater.DownloadState value)
         {
+            this.isCheckingUpdate = false;
             switch (value)
             {
                 case DalamudUpdater.DownloadState.Failed:
@@ -170,10 +171,9 @@ namespace Dalamud.Updater
                     break;
                 case DalamudUpdater.DownloadState.Checking:
                     setStatus("检查更新中...");
+                    isCheckingUpdate = true;
                     break;
             }
-
-            this.isCheckingUpdate = false;
         }
 
         public void SetDalamudVersion()
@@ -263,6 +263,7 @@ namespace Dalamud.Updater
                 {
                     try
                     {
+                        if (this.isCheckingUpdate) throw new Exception("正在更新卫月...");
                         //var newPidList = Process.GetProcessesByName("ffxiv_dx11").Where(process =>
                         //{
                         //    return !process.MainWindowTitle.Contains("FINAL FANTASY XIV");

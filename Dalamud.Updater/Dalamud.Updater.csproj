@@ -8,8 +8,8 @@
     <Company>Bluefissure</Company>
     <Product>Dalamud.Updater</Product>
     <Copyright>Copyright © Bluefissure 2022</Copyright>
-    <AssemblyVersion>1.0.7.2</AssemblyVersion>
-    <FileVersion>1.0.7.2</FileVersion>
+    <AssemblyVersion>1.0.7.3</AssemblyVersion>
+    <FileVersion>1.0.7.3</FileVersion>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
@@ -43,6 +43,7 @@
     <PackageReference Include="SharpCompress" Version="0.38.0" />
     <PackageReference Include="System.Memory" Version="4.6.0" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.6.0" />
+    <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="PresentationFramework" />
