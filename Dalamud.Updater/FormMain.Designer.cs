@@ -1,5 +1,6 @@
 
 using System;
+using System.Windows.Forms;
 
 namespace Dalamud.Updater
 {
@@ -168,6 +169,7 @@ namespace Dalamud.Updater
             this.delayLabel.Size = new System.Drawing.Size(129, 37);
             this.delayLabel.TabIndex = 10;
             this.delayLabel.Text = "延迟注入";
+            this.delayLabel.Margin = new Padding(0, 6, 0, 0);
             // 
             // second
             // 
@@ -177,6 +179,7 @@ namespace Dalamud.Updater
             this.second.Size = new System.Drawing.Size(45, 37);
             this.second.TabIndex = 11;
             this.second.Text = "秒";
+            this.second.Margin = new Padding(0, 6, 0, 0);
             // 
             // delayBox
             // 
@@ -203,12 +206,12 @@ namespace Dalamud.Updater
             // 
             this.toolStripProgressBar1.Font = new System.Drawing.Font("Microsoft YaHei UI", 10.66667F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.toolStripProgressBar1.Name = "toolStripProgressBar1";
-            this.toolStripProgressBar1.Size = new System.Drawing.Size(160, 32);
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(160, 20);
             // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 35);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 24);
             this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label1
@@ -251,8 +254,8 @@ namespace Dalamud.Updater
             this.checkboxTableLayout.Margin = new System.Windows.Forms.Padding(5);
             this.checkboxTableLayout.Name = "checkboxTableLayout";
             this.checkboxTableLayout.RowCount = 2;
-            this.checkboxTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.checkboxTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.checkboxTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 36F));
+            this.checkboxTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 36F));
             this.checkboxTableLayout.Size = new System.Drawing.Size(486, 100);
             this.checkboxTableLayout.TabIndex = 16;
             // 
@@ -305,7 +308,7 @@ namespace Dalamud.Updater
             this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.mainTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.mainTableLayout.Size = new System.Drawing.Size(496, 659);
+            this.mainTableLayout.Size = new System.Drawing.Size(360, 540);
             this.mainTableLayout.TabIndex = 19;
             // 
             // labelVersion
@@ -326,7 +329,7 @@ namespace Dalamud.Updater
             this.buttonCheckForUpdate.Location = new System.Drawing.Point(5, 52);
             this.buttonCheckForUpdate.Margin = new System.Windows.Forms.Padding(5);
             this.buttonCheckForUpdate.Name = "buttonCheckForUpdate";
-            this.buttonCheckForUpdate.Size = new System.Drawing.Size(486, 96);
+            this.buttonCheckForUpdate.Size = new System.Drawing.Size(486, 64);
             this.buttonCheckForUpdate.TabIndex = 0;
             this.buttonCheckForUpdate.Text = "检查更新";
             this.buttonCheckForUpdate.UseVisualStyleBackColor = true;
@@ -366,14 +369,14 @@ namespace Dalamud.Updater
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(15F, 37F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(512, 721);
+            this.ClientSize = new System.Drawing.Size(300, 540);
             this.Controls.Add(this.mainTableLayout);
             this.Controls.Add(this.statusStrip1);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(540, 800);
+            this.MinimumSize = new System.Drawing.Size(300, 540);
             this.Name = "FormMain";
             this.Padding = new System.Windows.Forms.Padding(8);
             this.Text = "卫月更新器";
@@ -428,4 +431,3 @@ namespace Dalamud.Updater
         private System.Windows.Forms.TableLayoutPanel delayTableLayout;
     }
 }
-
