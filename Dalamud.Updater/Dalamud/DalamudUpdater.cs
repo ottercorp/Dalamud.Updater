@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -135,28 +136,43 @@ namespace XIVLauncher.Common.Dalamud
         {
             //lock (Mutex)
             //{
-                this.State = DownloadState.Checking;
-                Log.Information("[DUPDATE] Starting...");
                 Task.Run(async () =>
                 {
-                    const int MAX_TRIES = 3;
-
-                    for (var tries = 0; tries < MAX_TRIES; tries++)
+                    var gameRunning = false;
+                    while (true)
                     {
-                        try
+                        if (!gameRunning)
                         {
-                            await UpdateDalamud().ConfigureAwait(true);
-                            break;
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Error(ex, "[DUPDATE] Update failed, try {TryCnt}/{MaxTries}...", tries, MAX_TRIES);
-                        }
-                    }
+                            Log.Information("[DUPDATE] Starting...");
+                            this.State = DownloadState.Checking;
+                            const int MAX_TRIES = 3;
 
-                    if (this.State != DownloadState.Done) this.State = DownloadState.Failed;
-                    //Mutex.Close();
-                    OnUpdateEvent?.Invoke(this.State);
+                            for (var tries = 0; tries < MAX_TRIES; tries++)
+                            {
+                                try
+                                {
+                                    await UpdateDalamud().ConfigureAwait(true);
+                                    break;
+                                }
+                                catch (Exception ex)
+                                {
+                                    Log.Error(ex, "[DUPDATE] Update failed, try {TryCnt}/{MaxTries}...", tries,
+                                              MAX_TRIES);
+                                }
+                            }
+
+                            if (this.State != DownloadState.Done) this.State = DownloadState.Failed;
+                            //Mutex.Close();
+                            OnUpdateEvent?.Invoke(this.State);
+                        }
+                        else
+                        {
+                            Log.Information("[DUPDATE] Game running, aborting update...");
+                        }
+
+                        await Task.Delay(TimeSpan.FromHours(6)).ConfigureAwait(false);
+                        gameRunning = Process.GetProcessesByName("ffxiv_dx11").Any();
+                    }
                 });
             //}
 
