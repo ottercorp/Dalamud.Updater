@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace XIVLauncher.Common.Util;
@@ -26,6 +27,7 @@ public class HttpClientDownloadWithProgress : IDisposable
     {
         timeout ??= TimeSpan.FromDays(1);
         this.httpClient = new HttpClient { Timeout = timeout.Value };
+        this.httpClient.DefaultRequestHeaders.Add("User-Agent", $"Dalamud.Updater v{Assembly.GetExecutingAssembly().GetName().Version}");
 
         using var response = await this.httpClient.GetAsync(this.downloadUrl, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
         await this.DownloadFileFromHttpResponseMessage(response).ConfigureAwait(false);

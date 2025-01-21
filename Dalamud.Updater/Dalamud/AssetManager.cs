@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using SharpCompress.Common;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 
 namespace XIVLauncher.Common.Dalamud
 {
@@ -44,7 +45,8 @@ namespace XIVLauncher.Common.Dalamud
             {
                 NoCache = true,
             };
-            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36 Edg/130.0.0.0");
+            //client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36 Edg/130.0.0.0");
+            client.DefaultRequestHeaders.Add("User-Agent", $"Dalamud.Updater v{Assembly.GetExecutingAssembly().GetName().Version}");
             client.DefaultRequestHeaders.Add("accept-encoding", "gzip, deflate, br");
             using var sha1 = SHA1.Create();
 

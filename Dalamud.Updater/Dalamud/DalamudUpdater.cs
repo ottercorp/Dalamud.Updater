@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
@@ -192,6 +193,8 @@ namespace XIVLauncher.Common.Dalamud
             {
                 NoCache = true,
             };
+
+            client.DefaultRequestHeaders.Add("User-Agent", $"Dalamud.Updater v{Assembly.GetExecutingAssembly().GetName().Version}");
 
             var versionInfoJsonRelease = await client.GetStringAsync(REMOTE_VERSION + "release").ConfigureAwait(false);
 
