@@ -149,10 +149,12 @@ namespace XIVLauncher.Common.Dalamud
                         Log.Information("[DASSET] Downloading {0} to {1}...", entry.Url, entry.FileName);
 
                         var request = await client.GetAsync(entry.Url).ConfigureAwait(true);
+                        if (!entry.Url.Contains("aonyx.ffxiv.wang"))
+                            request.Headers.Add("User-Agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36 Edg/130.0.0.0");
                         request.EnsureSuccessStatusCode();
                         File.WriteAllBytes(newFilePath, await request.Content.ReadAsByteArrayAsync().ConfigureAwait(true));
                         isRefreshNeeded = true;
-                        continue;
+                        break;
                     }
                     catch (Exception ex)
                     {
