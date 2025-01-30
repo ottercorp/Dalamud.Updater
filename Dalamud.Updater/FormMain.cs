@@ -36,6 +36,12 @@ namespace Dalamud.Updater
         private bool desktopDownloadFinished = false;
         private Config config;
         private DalamudLoadingOverlay dalamudLoadingOverlay;
+        private double? prevScaleFactor;
+
+        // 下面两个变量只在窗口 Load 时初始化一次，之后不再修改，用于计算窗体大小时，作为基准值。
+        // 其实在 constructor 里面初始化也可，但是一定要在 InitComponents() 之后。
+        private int initMinWidth = 0;
+        private int initMinHeight = 0;
 
         private readonly DirectoryInfo addonDirectory;
         private readonly DirectoryInfo runtimeDirectory;
@@ -325,9 +331,6 @@ namespace Dalamud.Updater
         }
 
         #endregion
-        private void FormMain_Load(object sender, EventArgs e)
-        {
-        }
 
         private void UpdateFormConfig()
         {
@@ -664,7 +667,8 @@ namespace Dalamud.Updater
                     return false;
                 }
             }
-            if (IsZombieProcess(pid)) {
+            if (IsZombieProcess(pid))
+            {
                 return false;
             }
             if (isInjected(process))
@@ -699,7 +703,8 @@ namespace Dalamud.Updater
 
         private void ButtonInject_Click(object sender, EventArgs e)
         {
-            if (this.isCheckingUpdate) {
+            if (this.isCheckingUpdate)
+            {
                 injectTimes++;
                 if (injectTimes == 3)
                 {
@@ -874,5 +879,34 @@ namespace Dalamud.Updater
 
         #endregion
 
+        #region WindowSizing
+
+        private void ScaleOnDemand()
+        {
+            var bounds = Screen.FromControl(this).Bounds;
+            var factor = bounds.Height / 1080.0;
+
+            if (prevScaleFactor is null || prevScaleFactor != factor)
+            {
+                this.ScaleControls(factor);
+            }
+        }
+
+        private void ScaleControls(double factor)
+        {
+            var minWidth = (int)(this.initMinWidth * factor);
+            var minHeight = (int)(this.initMinHeight * factor);
+            this.MinimumSize = new System.Drawing.Size(minWidth, minHeight);
+        }
+
+        #endregion
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+            this.initMinHeight = this.MinimumSize.Height;
+            this.initMinWidth = this.MinimumSize.Width;
+
+            this.ScaleOnDemand();
+        }
     }
 }
