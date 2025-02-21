@@ -60,6 +60,10 @@ namespace Dalamud.Updater
             {
                 form.Show();
             }
+
+            var formXL = new FormXL();
+            formXL.Show();
+
             Application.Run();
         }
 
