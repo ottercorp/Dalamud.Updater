@@ -8,8 +8,8 @@
     <Company>Bluefissure</Company>
     <Product>Dalamud.Updater</Product>
     <Copyright>Copyright © Bluefissure 2022</Copyright>
-    <AssemblyVersion>1.0.7.5</AssemblyVersion>
-    <FileVersion>1.0.7.5</FileVersion>
+    <AssemblyVersion>1.8.8.6</AssemblyVersion>
+    <FileVersion>1.8.8.6</FileVersion>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <UseWindowsForms>true</UseWindowsForms>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>

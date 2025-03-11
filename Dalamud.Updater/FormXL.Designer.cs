@@ -90,7 +90,7 @@ namespace Dalamud.Updater
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(207)))), ((int)(((byte)(227)))));
             this.label3.Location = new System.Drawing.Point(25, 313);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(425, 32);
+            this.label3.Size = new System.Drawing.Size(264, 19);
             this.label3.TabIndex = 4;
             this.label3.Text = "请放心，您的插件和配置都不会丢失。";
             // 
@@ -110,7 +110,7 @@ namespace Dalamud.Updater
             // 
             // FormXL
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 30F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(19)))), ((int)(((byte)(47)))), ((int)(((byte)(70)))));
             this.ClientSize = new System.Drawing.Size(632, 491);
@@ -126,7 +126,7 @@ namespace Dalamud.Updater
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormXL";
-            this.Text = "卫月更新器";
+            this.Text = " 再见了，所有的拉屎器！";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormXL_FormClosed);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.FormXL_Paint);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
