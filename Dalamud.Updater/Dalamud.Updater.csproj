@@ -8,8 +8,8 @@
     <Company>Bluefissure</Company>
     <Product>Dalamud.Updater</Product>
     <Copyright>Copyright © Bluefissure 2022</Copyright>
-    <AssemblyVersion>1.8.8.6</AssemblyVersion>
-    <FileVersion>1.8.8.6</FileVersion>
+    <AssemblyVersion>2.8.8.6</AssemblyVersion>
+    <FileVersion>2.8.8.6</FileVersion>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <UseWindowsForms>true</UseWindowsForms>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
@@ -103,5 +103,11 @@
   <ItemGroup>
     <Compile Remove="AssetManager.cs" />
     <Compile Remove="UnmanagedRunner.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Resources\48186_One-Last-Kiss2.mid" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\48186_One-Last-Kiss2.mid" />
   </ItemGroup>
 </Project>
